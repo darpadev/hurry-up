@@ -1,0 +1,121 @@
+      <div class="row">
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-body">
+              <form class="form-horizontal">
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Pemohon Izin Kerja</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo $leave->name ?>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Tanggal</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo date('j F Y', strtotime($leave->start)).' s/d '.date('j F Y', strtotime($leave->finish)) ?>
+                    </label>
+                  </div>
+                </div>
+                <?php 
+                  $finish = new DateTime($leave->finish);
+                  $start = new DateTime($leave->start);
+
+                  $interval = $finish->diff($start);
+                  $elapsed = $interval->format('%d');
+                  ?>
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Durasi</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo $elapsed ?> Hari
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Jenis</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo $leave->type ?>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Status</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo $leave->status ?>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label style="font-weight: 400" for="inputName" class="col-sm-4 col-form-label">Deskripsi</label>
+                  <div class="col-sm-8">
+                    <label style="border: 0; color: black;" class="form-control">
+                      <?php echo $leave->description ?>
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="card-footer">
+              <?php if (isset($_GET['date'])): ?>
+                <a class="btn btn-primary float-right" href="<?php echo base_url() ?>employee/approve/leave<?php echo '?date='.$_GET['date'] ?>">Kembali</a>              
+              <?php else: ?>
+                <a class="btn btn-primary float-left" href="<?php echo base_url() ?>employee/approve/leave">Kembali</a>              
+              <?php endif ?>
+            </div>
+
+          </div>
+        </div>
+        
+        <div class="col-md-7">
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Persetujuan Izin Kerja</h3>  
+            </div>
+
+            <div class="card-body">
+              <table id="" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th style="width: 5%" class="center">No</th>
+                  <th class="center">Pemberi Persetujuan</th>
+                  <th class="center">Status</th>
+                  <th style="width: 30%" class="center">Perubahan</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php $no = 1;
+                foreach ($data->result() as $value) {
+                ?>
+                <tr>
+                  <td class="center"><?php echo $no++ ?></td>
+                  <td><?php echo $value->approver ?></td>
+                  <td class="center"><span class="btn btn-info btn-xs"><?php echo $value->status ?></span></td>
+                  <td class="center"><?php echo date('Y-m-d H:i:s', strtotime($value->updated_at)) ?></td>
+                </tr>
+                <?php } ?>
+              </table>
+            </div>
+
+            <?php 
+            $status_approval_approver = $this->db->select('id')->from('approval_leaves')->where(array('leave_id' => $leave->id, 'approver_id' => $this->uri->segment(5)))->where_in('flag', array(4))->get()->row();
+
+            if ($status_approval_approver): ?>
+              <div class="card-footer">
+                <div class="float-right">
+                  <a href="<?php echo base_url() ?>employee/approve/approve_leave/<?php echo $leave->id ?>/<?php echo $this->uri->segment(5) ?>" class="btn btn-success approve-confirmation"><i class="fa fa-check" aria-hidden="true"></i> Terima</a>
+                  <a href="<?php echo base_url() ?>employee/approve/reject_leave/<?php echo $leave->id ?>/<?php echo $this->uri->segment(5) ?>" class="btn btn-danger reject-confirmation"><i class="fa fa-times" aria-hidden="true"></i> Tolak</a>                
+                </div>
+              </div>              
+            <?php endif ?>
+          </div>
+
+        </div>
+        </div>
+      </div>

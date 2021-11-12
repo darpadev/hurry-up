@@ -1,0 +1,148 @@
+
+
+        <style>
+          .grid-container {
+            display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+            overflow: auto;
+            max-height: 400px;
+          }
+          .grid {
+            display: flex;
+            flex-wrap: nowrap;
+          }
+          .grid-col {
+            min-width: 40px;
+          }
+
+          .grid-item--header {
+            position: sticky;
+            position: -webkit-sticky;
+            background: white;
+            top: 0;
+          }
+
+          .grid-item--footer {
+            position: sticky;
+            position: -webkit-sticky;
+            background: white;
+            bottom: 0;
+          }
+
+          .grid-item--header--left {
+            min-width: 400px;
+            position: sticky;
+            position: -webkit-sticky;
+            background: white;
+            top: 0;
+          }
+
+          .grid-item--footer--left {
+            min-width: 400px;
+            position: sticky;
+            position: -webkit-sticky;
+            background: white;
+            bottom: 0;
+          }
+
+          .grid-col--fixed-left {
+            position: sticky;
+            left: 0;
+            z-index: 9998;
+            background: white;
+          }
+          /*.grid-col--fixed-right {
+            position: sticky;
+            right: 0;
+            z-index: 9998;
+            background: white;
+          }*/
+
+          .grid-item {
+            border: 1px solid gray;
+          }
+        </style>
+
+        <div class="row">
+          <section class="col-lg-12 connectedSortable">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Kehadiran Bulan <?= month(date('n')).' '.date('Y') ?></h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <?php $days = cal_days_in_month(CAL_GREGORIAN,date('n'),date('Y')); ?>
+
+              <div class="card-body">
+                <div class="grid-container">
+                  <div class="grid">
+                    <div class="grid-col grid-col--fixed-left">
+                      <div class="grid-item grid-item--header--left">
+                        <p style="margin-bottom: 1px;" class="text-center"><strong>Pegawai</strong></p>
+                      </div>
+
+                      <?php foreach ($this->db->select('ep.nip, e.name')->from('employee_pt as ep')->join('employees as e', 'ep.employee_id = e.id')->where('ep.status', 1)->order_by('ep.nip', 'ASC')->get()->result() as $emp): ?>                        
+                        <div class="grid-item">
+                          <p style="margin-bottom: 1px;"><strong><?= $emp->nip ?></strong> - <strong><?= $emp->name?></strong></p>
+                        </div>
+                      <?php endforeach ?>
+
+                      <div class="grid-item grid-item--footer--left">
+                        <p style="margin-bottom: 1px;" class="text-center"><strong>Total Kehadiran</strong></p>
+                        <!-- <p style="margin-bottom: 1px;" class="text-center">Ketersediaan (%)</p> -->
+                      </div>
+                    </div>
+
+                    <?php for($i = 1; $i <= $days; $i++): 
+                      $date = date('Y-m-d', strtotime(date('Y-m').'-'.$i));
+                      $curr = date('l', strtotime($date));
+                      ?>
+
+                      <div class="grid-col" 
+                      <?php 
+                      if ($date == date('Y-m-d')) {
+                        echo 'style="background: #fff2ca;"';
+                      } elseif ($curr == 'Sunday') {
+                        echo 'style="background: #c34f5a;"';
+                      }
+                      ?>
+                      >
+                        <div class="grid-item grid-item--header">
+                          <p style="margin-bottom: 1px;" class="text-center"><?= $i ?></p>
+                        </div>
+
+                        <?php                          
+                        $v = 0; 
+                        $sum = 0;
+                        foreach ($this->db->select('ep.employee_id')->from('employee_pt as ep')->join('employees as e', 'ep.employee_id = e.id')->where('ep.status', 1)->order_by('ep.nip', 'ASC')->get()->result() as $emp): 
+
+                        $check = $this->db->select('id')->from('log_presences as lp')->where(array('lp.employee_id' => $emp->employee_id, 'lp.date' => $date))->get()->row(); ?>
+                       
+                          <div class="grid-item">
+                          <?php if ($check) : 
+                            $v++; ?> 
+                            <p style="margin-bottom: 1px;" class="text-center"><strong>v</strong></p>
+                          <?php else : ?>
+                            <p style="margin-bottom: 1px;" class="text-center"><strong>-</strong></p>
+                          <?php endif ?>
+                          </div>
+                        <?php $sum++; endforeach ?>                        
+
+                        <div class="grid-item grid-item--footer">
+                          <p style="margin-bottom: 1px;" class="text-center"><strong><?= $v ?></strong></p>
+                          <!-- <p style="margin-bottom: 1px;" class="text-center"><strong><?= number_format((float)$v/$sum * 100, 2, '.', '') ?></strong></p> -->
+                        </div>
+                    </div>  
+                    <?php endfor ?>
+
+                                      
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+        </div>
