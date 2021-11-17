@@ -249,28 +249,69 @@ class Notifications extends CI_Model
 	}
 
 	public function sendMailEmployeePromotion(){
-		$config = array(
-			'protocol'    => 'smtp',
-			'smtp_host'   => 'mail.universitaspertamina.ac.id',
-			'smtp_port'   => 587,
-			'smtp_user'   => 'hurryup@universitaspertamina.ac.id',
-			'smtp_pass'   => 'P4ssw0rd',
-			'emailtype'   => 'html',
-			'charset'     => 'iso-8859-1'
-		);
+		// $config = array(
+		// 	'protocol'    => 'smtp',
+		// 	'smtp_host'   => 'mail.universitaspertamina.ac.id',
+		// 	'smtp_port'   => 587,
+		// 	'smtp_user'   => 'hurryup@universitaspertamina.ac.id',
+		// 	'smtp_pass'   => 'P4ssw0rd',
+		// 	'emailtype'   => 'html',
+		// 	'charset'     => 'iso-8859-1'
+		// );
 
-		$this->load->library('email', $config);
+		// $this->load->library('email', $config);
 
-		$this->email->set_newline("\r\n");
+		// $this->email->set_newline("\r\n");
 
-		$this->email->from('hurryup@universitaspertamina.ac.id', 'Hurry UP');
-		$this->email->to('milzam.khutomo@gmail.com');
-		$this->email->cc('milzamhutomo.social@gmail.com');
-		$this->email->bcc('105217013@student.universitaspertamina.ac.id');
+		// $this->email->from('hurryup@universitaspertamina.ac.id', 'Hurry UP');
+		// $this->email->to('milzam.khutomo@gmail.com');
+		// $this->email->cc('milzamhutomo.social@gmail.com');
+		// $this->email->bcc('105217013@student.universitaspertamina.ac.id');
 
-		$this->email->subject('Test Email');
-		$this->email->message('Lorem ipsum');
+		// $this->email->subject('Test Email');
+		// $this->email->message('Lorem ipsum');
 
-		var_dump($this->email->send());
+		// var_dump($this->email->send());
+
+		$mail = $this->db->get('email')->row();
+		$subject = '[HURRY-UP] - Pengangkatan Karyawan PKWT';
+		$content = '
+			Halo,
+			<br>
+			<br>
+			Saat ini terdapat karyawan yang terikat dengan skema Perjanjian Kerja Waktu Tertentu (PKWT)
+			yang telah bekerja selama 2 tahun pada 3 bulan sejak pemberitahuan ini dikirimkan.
+			<br>
+			Berikut adalah daftar karyawan tersebut:
+			<br>
+			<br>
+			Terima kasih.
+			<br>
+			<br>
+			***** THIS EMAIL IS GENERATED AUTOMATICALLY BY HURRY-UP SYSTEM *****
+			<br>
+			<br>
+			***** PLEASE DO NOT REPLY *****
+		';
+
+		$payload = array(
+			'sender_name'	=> $mail->name,
+			'sender_email'	=> $mail->email,
+			'password'		=> $mail->password,
+			'host'			=> $mail->host,
+			'port'			=> $mail->port,
+			'encryption'	=> 'tls',
+			'subject'		=> $subject,
+			'receiver'		=> 'smtptester.up@gmail.com',
+			'content'		=> $content
+		);	
+
+		$send = $this->mailer->sendEmail($payload);
+
+		if (!$send) {
+			$this->session->set_flashdata('error', 'Email pemberitahuan gagal dikirim');
+		}
+
+		log_message('debug', print_r($send, TRUE));
 	}
 }
