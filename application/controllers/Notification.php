@@ -18,13 +18,13 @@
 
         public function index()
         {
-            $data['content']    = $this->view.'content';
-            $data['css']        = $this->view.'css';
-            $data['javascript'] = $this->view.'javascript';
-            $data['title']      = 'Notifikasi';
-            $data['sub_title']  = '';
-            $data['notif']      = $this->general->searchEmployeeAbsence();
-            $data['promotion']  = $this->general->countEmployeePromotion(); 
+            $data['content']            = $this->view.'content';
+            $data['css']                = $this->view.'css';
+            $data['javascript']         = $this->view.'javascript';
+            $data['title']              = 'Notifikasi';
+            $data['sub_title']          = '';
+            $data['notif']              = $this->general->searchEmployeeAbsence();
+            $data['promotion']          = $this->general->countEmployeePromotion(); 
             $data['employee_promotion'] = $this->general->showEmployeePromotion();
 
             $this->db->set('checked', TRUE);

@@ -367,8 +367,10 @@ class General extends CI_Model
 		return $query;
 	}
 
-	public function searchEmployeePromotion(){
-		
+	public function searchEmployeePromotion()
+	{
+		$this->load->model('notifications');
+
 		// Search the employee(s) who still in contract and have working for at least 2 years
 		$this->db->select('ep.employee_id, ep.join_date, p.parent_id');
 		$this->db->from('employee_pt AS ep');
@@ -390,7 +392,13 @@ class General extends CI_Model
 		}
 
 		// Search for HRD
-		$hrd = $this->db->select('user_id AS id')->from('login')->where('role_id', MY_Controller::HRD)->get()->result();
+		$this->db->select('e.name, l.user_id AS id');
+		$this->db->from('login AS l');
+		$this->db->join('employee_pt AS ep', 'ep.user_id = l.user_id');
+		$this->db->join('employees AS e', 'e.id = ep.employee_id');
+		$this->db->where('role_id', MY_Controller::HRD);
+
+		$hrd = $this->db->get()->result();
 		
 		// Send information to HRD
 		foreach ($hrd as $person){
@@ -402,6 +410,7 @@ class General extends CI_Model
 				
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
+				$this->notifications->sendMailEmployeePromotion($person->name);
 			}
 		}
 		
@@ -422,6 +431,7 @@ class General extends CI_Model
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
+				$this->notifications->sendMailEmployeePromotion($person->name);
 			}
 
 			// Search for top-level-parent
@@ -445,11 +455,13 @@ class General extends CI_Model
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
+				$this->notifications->sendMailEmployeePromotion($person->name);
 			}
 		}
 	}
 
-	public function countEmployeePromotion(){
+	public function countEmployeePromotion()
+	{
 		$promotion = array();
 
 		$this->db->select('e.name, ep.join_date');
@@ -499,7 +511,8 @@ class General extends CI_Model
 		return $promotion;
 	}
 			
-	public function showEmployeePromotion(){
+	public function showEmployeePromotion()
+	{
 		$promotion = array();
 
 		$this->db->select('ep.employee_id, e.name, ep.nip, ep.join_date');

@@ -248,35 +248,12 @@ class Notifications extends CI_Model
 		
 	}
 
-	public function sendMailEmployeePromotion(){
-		// $config = array(
-		// 	'protocol'    => 'smtp',
-		// 	'smtp_host'   => 'mail.universitaspertamina.ac.id',
-		// 	'smtp_port'   => 587,
-		// 	'smtp_user'   => 'hurryup@universitaspertamina.ac.id',
-		// 	'smtp_pass'   => 'P4ssw0rd',
-		// 	'emailtype'   => 'html',
-		// 	'charset'     => 'iso-8859-1'
-		// );
-
-		// $this->load->library('email', $config);
-
-		// $this->email->set_newline("\r\n");
-
-		// $this->email->from('hurryup@universitaspertamina.ac.id', 'Hurry UP');
-		// $this->email->to('milzam.khutomo@gmail.com');
-		// $this->email->cc('milzamhutomo.social@gmail.com');
-		// $this->email->bcc('105217013@student.universitaspertamina.ac.id');
-
-		// $this->email->subject('Test Email');
-		// $this->email->message('Lorem ipsum');
-
-		// var_dump($this->email->send());
-
+	public function sendMailEmployeePromotion($receiver)
+	{
 		$mail = $this->db->get('email')->row();
 		$subject = '[HURRY-UP] - Pengangkatan Karyawan PKWT';
 		$content = '
-			Halo,
+			Halo,' . $receiver . '
 			<br>
 			<br>
 			Saat ini terdapat karyawan yang terikat dengan skema Perjanjian Kerja Waktu Tertentu (PKWT)
