@@ -372,7 +372,7 @@ class General extends CI_Model
 		$this->load->model('notifications');
 
 		// Search the employee(s) who still in contract and have working for at least 2 years
-		$this->db->select('ep.employee_id, ep.join_date, p.parent_id');
+		$this->db->select('ep.employee_id, ep.join_date, ep.nip, e.name, p.parent_id');
 		$this->db->from('employee_pt AS ep');
 		$this->db->join('employees AS e', 'e.id = ep.employee_id');
 		$this->db->join('employee_position AS ept', 'ept.employee_id = ep.employee_id');
@@ -387,7 +387,15 @@ class General extends CI_Model
 		
 		foreach ($employee as $value){
 			if (date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
-				array_push($promotion, array('id' => $value->employee_id, 'position' => $value->parent_id));
+				array_push(
+					$promotion, 
+					array(
+						'id' => $value->employee_id, 
+						'position' => $value->parent_id, 
+						'nip' => $value->nip, 
+						'name' => $value->name
+					)
+				);
 			}
 		}
 
@@ -410,7 +418,7 @@ class General extends CI_Model
 				
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
-				$this->notifications->sendMailEmployeePromotion($person->name);
+				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
 		}
 		
@@ -431,7 +439,7 @@ class General extends CI_Model
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
-				$this->notifications->sendMailEmployeePromotion($person->name);
+				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
 
 			// Search for top-level-parent
@@ -455,7 +463,7 @@ class General extends CI_Model
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
-				$this->notifications->sendMailEmployeePromotion($person->name);
+				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
 		}
 	}

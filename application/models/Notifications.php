@@ -248,19 +248,22 @@ class Notifications extends CI_Model
 		
 	}
 
-	public function sendMailEmployeePromotion($receiver)
+	public function sendMailEmployeePromotion($receiver, $employee)
 	{
 		$mail = $this->db->get('email')->row();
 		$subject = '[HURRY-UP] - Pengangkatan Karyawan PKWT';
 		$content = '
-			Halo,' . $receiver . '
+			Halo, ' . $receiver . '
 			<br>
 			<br>
 			Saat ini terdapat karyawan yang terikat dengan skema Perjanjian Kerja Waktu Tertentu (PKWT)
 			yang telah bekerja selama 2 tahun pada 3 bulan sejak pemberitahuan ini dikirimkan.
 			<br>
-			Berikut adalah daftar karyawan tersebut:
-			<br>
+			Berikut adalah informasi mengenai karyawan tersebut:'
+			.
+			$employee['nip'] . ' - ' . $employee['name']
+			.
+			'<br>
 			<br>
 			Terima kasih.
 			<br>
@@ -273,11 +276,11 @@ class Notifications extends CI_Model
 
 		$payload = array(
 			'sender_name'	=> $mail->name,
-			'sender_email'	=> $mail->email,
-			'password'		=> $mail->password,
-			'host'			=> $mail->host,
-			'port'			=> $mail->port,
-			'encryption'	=> 'tls',
+			'sender_email'	=> 'smtptester.up@gmail.com',
+			'password'		=> '{{$P4ssw0rd}}',
+			'host'			=> 'smtp.googlemail.com',
+			'port'			=> 465,
+			'encryption'	=> 'ssl',
 			'subject'		=> $subject,
 			'receiver'		=> 'smtptester.up@gmail.com',
 			'content'		=> $content

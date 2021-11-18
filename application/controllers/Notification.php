@@ -58,7 +58,7 @@
             // $this->email->message('Lorem ipsum');
 
             // $this->email->send();
-            $this->notifications->sendMailEmployeePromotion("Test From Controller");
+            $this->notifications->sendMailEmployeePromotion("Test From Controller", array('name' => 'Karyawan Kontrak', 'nip' => '218999'));
             // $this->notifications->sendMailOvertimeToHrd('milzam.khutomo@gmail.com', 'milzam.khutomo@gmail.com', 'milzam.khutomo@gmail.com', '2020-06-14', '123');
         }
     }
