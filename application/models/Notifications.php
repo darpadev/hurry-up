@@ -259,7 +259,10 @@ class Notifications extends CI_Model
 			Saat ini terdapat karyawan yang terikat dengan skema Perjanjian Kerja Waktu Tertentu (PKWT)
 			yang telah bekerja selama 2 tahun pada 3 bulan sejak pemberitahuan ini dikirimkan.
 			<br>
-			Berikut adalah informasi mengenai karyawan tersebut:'
+			<br>
+			Berikut adalah informasi mengenai karyawan tersebut:
+			<br>
+			<br>'
 			.
 			$employee['nip'] . ' - ' . $employee['name']
 			.
