@@ -20,11 +20,12 @@ class General extends CI_Model
 		$employee = $this->db->select('*')->from('employee_pt')->where('status', 1)->get()->result();
 
 		foreach ($employee as $emp) {
-			$value = $this->db->select('ep.nip, e.name, t.date, ep.status')->from('log_presences as t')->join('employee_pt as ep', 'ep.employee_id = t.employee_id')->join('employees as e', 'e.id = ep.employee_id')->where('ep.nip', $emp->nip)->order_by('t.date ASC', 'ep.nip ASC')->get()->result();
+			$value = $this->db->select('ep.nip, e.name, e.id, t.date, ep.status')->from('log_presences as t')->join('employee_pt as ep', 'ep.employee_id = t.employee_id')->join('employees as e', 'e.id = ep.employee_id')->where('ep.nip', $emp->nip)->order_by('t.date ASC', 'ep.nip ASC')->get()->result();
 
 			if ($value) {
 				$dancug = end($value);
 
+				$arr[$i]['id'] = $dancug->id;
 				$arr[$i]['nip'] = $dancug->nip;
 				$arr[$i]['date'] = $dancug->date;
 				$arr[$i]['name'] = $dancug->name;
@@ -68,6 +69,7 @@ class General extends CI_Model
 
 			if (date('Y-m-d') > $key['date']) {
 				if ($day >= 2) { // parameter tidak absen
+					$mm[$j]['id'] = $key['id'];
 					$mm[$j]['nip'] = $key['nip'];
 					$mm[$j]['name'] = $key['name'];
 					$mm[$j]['date'] = $key['date'];
@@ -77,7 +79,7 @@ class General extends CI_Model
 			}
 			$j++;
 		}
-		
+
 		return $mm;
 	}
 
@@ -367,6 +369,13 @@ class General extends CI_Model
 		return $query;
 	}
 
+	/**
+	 * 
+	 * @author 			Hutomo, Mohammad Milzam Kasyfillah | milzam.khutomo@gmail.com
+	 * @link			https://linktr.ee/m.hutomo
+	 * 
+	 */
+
 	public function searchEmployeePromotion()
 	{
 		$this->load->model('notifications');
@@ -489,35 +498,6 @@ class General extends CI_Model
 				array_push($promotion, array('name' => $value->name));
 			}		
 		}
-		// for ($i=0; $i < count($this->session->userdata('position')); $i++) { 
-			
-			// 	if ($this->session->userdata('level')[$i] == 3 or $this->session->userdata('level')[$i] == 4 or $this->session->userdata('role') == 2){
-				
-		// 		$base_query = "	SELECT ep.employee_id, e.name, ep.nip, ep.join_date, p.position
-		// 						FROM employee_pt 		AS ep
-		// 						JOIN employees 			AS e 	ON e.id = ep.employee_id
-		// 						JOIN employee_position 	AS ept 	ON ept.employee_id = ep.employee_id
-		// 						JOIN positions 			AS p 	ON p.id = ept.position_id
-		// 						WHERE ep.status = " . MY_Controller::CONTRACT;
-		
-		// 		if ($this->session->userdata('level')[$i] == 3){
-		// 			// If current user level is "Director"
-		// 			$base_query .= " AND p.parent_id IN (SELECT id FROM positions WHERE parent_id = " . $this->session->userdata('position')[$i] . ")";
-		
-		// 		}else if ($this->session->userdata('level')[$i] == 4){
-		// 			// If current user level is "Manager"
-		// 			$base_query .= " AND p.parent_id = " . $this->session->userdata('position')[$i];
-		// 		}
-		
-		// 		$base_query .= " GROUP BY ep.employee_id";
-		
-		// 		$employee = $this->db->query($base_query)->result();
-		
-		// 	}
-		// }
-		
-		// var_dump(count($promotion));
-		// die;
 		
 		return $promotion;
 	}
@@ -541,5 +521,70 @@ class General extends CI_Model
 		}
 
 		return $promotion;
+	}
+
+	public function storeEmployeeAbsence()
+	{
+		$employees = $this->searchEmployeeAbsence();
+
+		// Search for HRD
+		$this->db->select('e.name, l.user_id AS id');
+		$this->db->from('login AS l');
+		$this->db->join('employee_pt AS ep', 'ep.user_id = l.user_id');
+		$this->db->join('employees AS e', 'e.id = ep.employee_id');
+		$this->db->where('role_id', MY_Controller::HRD);
+
+		$hrd = $this->db->get()->result();
+		
+		// Send information to HRD
+		foreach ($hrd as $person){
+			foreach ($employees as $employee){
+				$data = array(
+					'employee_id' 	=> $employee['id'],
+					'receiver'		=> $person->id
+				);
+				
+				if ($this->db->get_where('employment_absences', $data)->where('checked', TRUE)->num_rows() > 0){
+					$this->db->set('checked', FALSE);
+					$this->db->where('receiver', $this->session->userdata('id'));
+					$this->db->update('employment_absences');
+				} else {					
+					$this->db->insert('employment_absences', $data);
+				}
+			}
+		}
+	}
+
+	public function countEmployeeAbsence()
+	{
+		$employees = $this->searchEmployeeAbsence();
+
+		$absences = $this->db->get_where('employment_absences', array('checked' => FALSE))->result();
+
+		$value = array();
+
+		foreach ($absences as $absence) {
+			foreach ($employees as $employee) {
+				if ($absence->employee_id == $employee['id']) {
+					array_push($value, array('name' => $employee['name'], 'day' => $employee['day']));
+					break;
+				}
+			}
+		}
+
+		return $value;
+	}
+
+	public function clearEmployeeAbsence()
+	{
+		$this->db->select('employee_id');
+		$this->db->from('employee_pt');
+		$this->db->join('users', 'users.id = employee_pt.user_id');
+		$this->db->where('users.id', $this->session->userdata('id'));
+		
+		$id = $this->db->get()->row()->employee_id;
+
+		$this->db->where('employee_id', $id);
+		$this->db->delete('employment_absences');
 	}
 }

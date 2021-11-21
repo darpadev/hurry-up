@@ -26,7 +26,7 @@ class Business extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Perjalanan Dinas';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);

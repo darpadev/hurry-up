@@ -25,7 +25,7 @@ class Training extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Pelatihan';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);

@@ -31,7 +31,7 @@ class Employee extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Pegawai';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['provinces']	= $this->db->get('provinces');
 		$data['cities']		= $this->db->get('cities');
@@ -78,7 +78,7 @@ class Employee extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Pegawai';
 		$data['sub_title']	= 'Detail';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['employee']	= $this->employees->showEmployee($this->uri->segment(4))->row();
 
@@ -269,7 +269,7 @@ class Employee extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Pegawai';
 		$data['sub_title']	= 'Ubah';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->employees->showEmployee($id)->row();
 		$data['employee_position']	= $this->employees->showEmployeeOrgUnit($id)->row();

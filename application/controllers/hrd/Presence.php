@@ -25,7 +25,7 @@ class Presence extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Presensi';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$nip = NULL;
@@ -66,7 +66,7 @@ class Presence extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Presensi';
 		$data['sub_title']	= 'Detail';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data'] 		= $this->presences->showEmployeePresence($this->uri->segment(4))->row();
 		
@@ -136,7 +136,7 @@ class Presence extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Presensi';
 		$data['sub_title']	= 'Ubah';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$data['data'] 		= $this->presences->showEmployeePresence($this->uri->segment(4))->row();
@@ -231,7 +231,7 @@ class Presence extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Presensi';
 		$data['sub_title']	= 'Absensi';
-		$data['notif'] 		= $this->general->searchEmployeeAbsence();
+		$data['notif'] 		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		
 		$this->load->view('includes/main', $data);

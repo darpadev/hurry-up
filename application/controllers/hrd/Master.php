@@ -28,7 +28,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'organization/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Organisasi';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$org_unit = NULL;
@@ -81,7 +81,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'organization/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Organisasi';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['org_unit']	= $this->db->get('organizations');
 		$data['data']		= $this->db->select('o.*')->from('organizations as o')->where('id', $this->uri->segment(4))->get()->row();
@@ -142,7 +142,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'position/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Jabatan';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['organizations'] = $this->db->select('id, org_unit')->from('organizations')->get();
 		$data['positions'] = $this->db->select('id, position')->from('positions')->get();
@@ -177,7 +177,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'position/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Jabatan';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->db->select('ept.id, ep.nip, ept.flag, ept.end_date, e.name, ept.start_date')->from('employee_position as ept')
 								->join('positions as p', 'p.id = ept.position_id')
@@ -202,7 +202,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'position/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Jabatan';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->db->select('ept.id, ep.nip, ept.flag, ept.end_date, e.name, ept.start_date, p.position, ept.position_id')
 								->from('employee_position as ept')
@@ -295,7 +295,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'position/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Jabatan';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->db->get_where('tupoksi', array('id' => $id))->row();
 		$data['position']	= $this->db->get_where('positions', array('id' => $data['data']->position_id))->row();
@@ -403,7 +403,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'position/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Ubah Jabatan';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['organizations'] = $this->db->select('*')->from('organizations')->get();
 		$data['positions'] = $this->db->select('*')->from('positions')->get();
@@ -464,7 +464,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'group/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Group';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data'] 		= $this->db->select('*')->from($this->group)->get();
 
@@ -494,7 +494,7 @@ class Master extends MY_Controller
 		$data['javascript']	= $this->view.'group/javascript';
 		$data['title']		= 'Master';
 		$data['sub_title']	= 'Ubah Group';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data'] 		= $this->db->select('*')->from($this->group)->where('id', $this->uri->segment(4))->get()->row();
 

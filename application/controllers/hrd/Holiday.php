@@ -25,7 +25,7 @@ class Holiday extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Hari Libur';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->db->select('t.id, t.day_off, t.description, e.name as created')->from('holiday as t')->join('users as u', 'u.id = t.updated_by')->join('employee_pt as ep', 'ep.user_id = u.id')->join('employees as e', 'ep.employee_id = e.id')->get();
 
@@ -57,7 +57,7 @@ class Holiday extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Hari Libur';
 		$data['sub_title']	= 'Ubah';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->db->select('t.id, t.day_off, t.description')->from('holiday as t')->where('id', $this->uri->segment(4))->get()->row();
 

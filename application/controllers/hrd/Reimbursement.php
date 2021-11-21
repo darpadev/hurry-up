@@ -25,7 +25,7 @@ class Reimbursement extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Pergantian Biaya';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);

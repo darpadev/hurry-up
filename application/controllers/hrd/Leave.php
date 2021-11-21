@@ -27,7 +27,7 @@ class Leave extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Izin Kerja';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 			$group = NULL;
@@ -72,7 +72,7 @@ class Leave extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Izin Kerja';
 		$data['sub_title']	= 'Lihat Izin Kerja';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->leaves->showEmployeeLeaveByLeaveId($id);
 		$data['leave']		= $this->leaves->showEmployeeLeave($id)->row();

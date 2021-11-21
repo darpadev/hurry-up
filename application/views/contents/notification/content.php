@@ -17,7 +17,7 @@
                 </thead>
                 <tbody>
                     <?php $no = 1;
-                    foreach ($notif as $value) : ?>
+                    foreach ($absence as $value) : ?>
                         <tr>
                             <td class="text-center"><?= $no++ ?></td>
                             <td class="text-center"><?= $value['nip'] ?></td>

@@ -32,7 +32,7 @@ class Team extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Anggota Tim';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$child = $this->general->getChildrenPositions($positions);
@@ -65,7 +65,7 @@ class Team extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Anggota Tim';
 		$data['sub_title']	= 'Detail Anggota';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		// validation team member
@@ -691,7 +691,7 @@ class Team extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja';
 		$data['sub_title']	= 'Hasil Penilaian';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data'] = $this->performances->getPerformanceResult($performance_id)->row();
 		$data['specific'] = $this->performances->getPerformanceSpecific($performance_id);

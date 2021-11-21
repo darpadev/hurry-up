@@ -28,7 +28,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->performances->searchEmployeeAssessmentByEmployee($employee_id);
 		// echo '<pre>';var_dump($data['data']->result());echo '</pre>';die();
@@ -52,7 +52,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja';
 		$data['sub_title']	= 'Hasil Penilaian';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data'] = $this->performances->getPerformanceResult($performance_id)->row();
 		$data['specific'] = $this->performances->getPerformanceSpecific($performance_id);
@@ -80,7 +80,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Sejawat';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['calendar']	= $period_active;
 		$data['data']		= $this->performances->searchPeerReviewByEmployee($employee_id);
@@ -103,7 +103,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Sejawat';
 		$data['sub_title']	= 'Ubah Penilai';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['coworkers']	= $this->general->getCoworker(NULL, $level);
 		$data['data']		= $this->employees->showEmployee($employee_id)->row();
@@ -127,7 +127,7 @@ class Performance extends MY_Controller
 		$data['sub_title']	= 'Hasil Penilaian';
 		$data['calendar']	= $pac;
 		$data['final_score']= $this->db->get_where('peer_review', array('id' => $id))->row();
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['coworkers']	= $this->general->getCoworker(NULL, $level);
 		$data['data']		= $this->employees->showEmployee($employee_id)->row();
@@ -157,7 +157,7 @@ class Performance extends MY_Controller
 		$data['title']		= 'Penilaian Sejawat';
 		$data['sub_title']	= 'Pilih Rekan Sejawat';
 		$data['calendar']	= $this->db->get_where('period', array('flag' => TRUE))->row();
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['coworkers']	= $this->general->getCoworker(NULL, $level);
 		$data['data']		= $this->employees->showEmployee($employee_id)->row();
@@ -281,7 +281,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Sejawat';
 		$data['sub_title']	= 'Permintaan Penilaian';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['coworkers']	= $this->general->getCoworker(NULL, $level);
 		$data['data']		= $this->employees->showEmployee($employee_id)->row();
@@ -311,7 +311,7 @@ class Performance extends MY_Controller
 		$data['sub_title']	= 'Permintaan Penilaian';
 		$data['calendar']	= $pac;
 		$data['peer_review']= $this->db->get_where('peer_review', array('id' => $id))->row();
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['coworkers']	= $this->general->getCoworker(NULL, $level);
 		$data['data']		= $this->employees->showEmployee($employee_id)->row();

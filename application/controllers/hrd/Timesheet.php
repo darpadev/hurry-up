@@ -25,7 +25,7 @@ class Timesheet extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Kegiatan Harian';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion'] 	= $this->general->countEmployeePromotion();
 
 		$start = NULL;

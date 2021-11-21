@@ -28,7 +28,7 @@ class Overtime extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Lembur';
 		$data['sub_title']	= 'Daftar Lembur';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$start = NULL;
@@ -68,7 +68,7 @@ class Overtime extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Lembur';
 		$data['sub_title']	= 'Lihat Lembur';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->overtimes->showApproverOvertimeByOvertimeId($id);
 		$data['overtime']	= $this->overtimes->showEmployeeOvertime($id)->row();
@@ -84,7 +84,7 @@ class Overtime extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Lembur';
 		$data['sub_title']	= 'Insentif';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['organizations'] = $this->general->getActiveOrganizations();
 
@@ -123,7 +123,7 @@ class Overtime extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Lembur';
 		$data['sub_title']	= 'Lihat Insentif';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 
 		$month = NULL;
 		$year = NULL;

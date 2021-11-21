@@ -25,7 +25,7 @@ class Role extends MY_Controller
 		$data['sub_title']	= '';
 
 		if ($this->session->userdata('role') == 2) {			
-			$data['notif']		= $this->general->searchEmployeeAbsence();
+			$data['notif']		= $this->general->countEmployeeAbsence();
 		}
 
 		$data['promotion']	= $this->general->countEmployeePromotion();

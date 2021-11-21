@@ -29,7 +29,7 @@ class Report extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Laporan';
 		$data['sub_title']	= 'Lembur';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$start = NULL;
@@ -201,7 +201,7 @@ class Report extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Laporan';
 		$data['sub_title']	= 'Izin Kerja';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);
@@ -214,7 +214,7 @@ class Report extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Laporan';
 		$data['sub_title']	= 'Pegawai';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);
@@ -227,7 +227,7 @@ class Report extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Laporan';
 		$data['sub_title']	= 'Kehadiran';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$this->load->view('includes/main', $data);

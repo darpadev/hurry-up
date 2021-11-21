@@ -27,7 +27,7 @@ class Approver extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Jabatan';
 		$data['sub_title']	= 'Approver';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['leaves']		= $this->employees->getLeaveApprover($this->uri->segment(4));
 		$data['overtimes']	= $this->employees->getOvertimeApprover($this->uri->segment(4));

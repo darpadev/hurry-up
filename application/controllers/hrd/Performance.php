@@ -34,7 +34,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Kalender Penilaian Kinerja';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$data['data'] = $this->performances->searchCalendarPerformance();
@@ -51,7 +51,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja';
 		$data['sub_title']	= 'Detail Kalender';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->performances->getDetailCalendar($calendar_id);
 
@@ -87,7 +87,7 @@ class Performance extends MY_Controller
 	    $data['javascript']  = $this->view.'javascript';
 	    $data['title']    = 'Penilaian Kinerja';
 	    $data['sub_title']  = 'Ubah';
-	    $data['notif']    = $this->general->searchEmployeeAbsence();
+	    $data['notif']    = $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 	    $data['data']    = $this->db->select('pac.id, pac.description, pac.period, pac.year')->from('performance_appraisal_calendar as pac')
@@ -179,7 +179,7 @@ class Performance extends MY_Controller
 	    $data['javascript']  = $this->view.'javascript';
 	    $data['title']    = 'Detail Kalendar';
 	    $data['sub_title']  = 'Ubah Detail Kalendar';
-	    $data['notif']    = $this->general->searchEmployeeAbsence();
+	    $data['notif']    = $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 	    $data['data']    = $this->db->select('paa.*, pat.type')->from('performance_appraisal_activity as paa')
@@ -257,7 +257,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Pegawai';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$employee = NULL;
@@ -308,7 +308,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Pegawai';
 		$data['sub_title']	= 'Hasil Penilaian Kinerja '.$year;
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$data['data'] = $this->performances->getPerformanceResult($id)->row();
@@ -333,7 +333,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Pegawai';
 		$data['sub_title']	= 'Kriteria Kinerja Standar';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$year = NULL;
@@ -475,7 +475,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Sejawat';
 		$data['sub_title']	= 'Kinerja Sejawat';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$employee = NULL;
@@ -515,7 +515,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Sejawat';
 		$data['sub_title']	= 'Hasil Penilaian';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['calendar']	= $pac;
 		$data['final_score']= $this->db->get_where('peer_review', array('id' => $id))->row();
@@ -534,7 +534,7 @@ class Performance extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penilaian Kinerja Sejawat';
 		$data['sub_title']	= 'Kriteria Kinerja Sejawat';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$year = NULL;

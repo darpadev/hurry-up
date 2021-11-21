@@ -36,8 +36,10 @@ class Auth extends CI_Controller
         $this->form_validation->set_rules('password', 'Password', 'required');
 
         if($this->form_validation->run()) {
-        	$data = array('username' => $this->input->post('username', TRUE),
-						  'password' => md5($this->input->post('password', TRUE))
+        	$data = array(	
+							'username' => $this->input->post('username', TRUE),
+							'password' => md5($this->input->post('password', TRUE)
+						)
 			);
 
 			$check = $this->authorization->check($data);
@@ -60,7 +62,9 @@ class Auth extends CI_Controller
 
 				$this->db->update('users', array('last_login' => date('Y-m-d H:i:s')), array('id' => $check->result()[0]->user_id));
 
+				$this->general->clearEmployeeAbsence();
 				$this->general->searchEmployeePromotion();
+				$this->general->storeEmployeeAbsence();
 
 				$role = $this->session->userdata('role');
 

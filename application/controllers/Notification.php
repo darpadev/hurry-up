@@ -23,7 +23,8 @@
             $data['javascript']         = $this->view.'javascript';
             $data['title']              = 'Notifikasi';
             $data['sub_title']          = '';
-            $data['notif']              = $this->general->searchEmployeeAbsence();
+            $data['notif']              = $this->general->countEmployeeAbsence();
+            $data['absence']            = $this->general->searchEmployeeAbsence();
             $data['promotion']          = $this->general->countEmployeePromotion(); 
             $data['employee_promotion'] = $this->general->showEmployeePromotion();
 
@@ -31,35 +32,15 @@
             $this->db->where('receiver', $this->session->userdata('id'));
             $this->db->update('employment_promotion');
 
+            $this->db->set('checked', TRUE);
+            $this->db->where('receiver', $this->session->userdata('id'));
+            $this->db->update('employment_absences');
+
             $this->load->view('includes/main', $data);
         }
 
         public function mail(){
-            // $config = array(
-            //     'protocol'    => 'smtp',
-            //     'smtp_host'   => 'ssl://smtp.googlemail.com',
-            //     'smtp_port'   => 456,
-            //     'smtp_user'   => 'milzam075@gmail.com',
-            //     'smtp_pass'   => '#Milzam70465',
-            //     'emailtype'   => 'html',
-            //     'charset'     => 'iso-8859-1'
-            // );
-
-            // $this->load->library('email', $config);
-
-            // $this->email->set_newline("\r\n");
-
-            // $this->email->from('milzam075@gmail.com', 'Milzam Hutomo');
-            // $this->email->to('milzam.khutomo@gmail.com');
-            // $this->email->cc('milzamhutomo.social@gmail.com');
-            // $this->email->bcc('105217013@student.universitaspertamina.ac.id');
-
-            // $this->email->subject('Test Email');
-            // $this->email->message('Lorem ipsum');
-
-            // $this->email->send();
             $this->notifications->sendMailEmployeePromotion("Test From Controller", array('name' => 'Karyawan Kontrak', 'nip' => '218999'));
-            // $this->notifications->sendMailOvertimeToHrd('milzam.khutomo@gmail.com', 'milzam.khutomo@gmail.com', 'milzam.khutomo@gmail.com', '2020-06-14', '123');
         }
     }
 

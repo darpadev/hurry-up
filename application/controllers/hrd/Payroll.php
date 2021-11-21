@@ -27,7 +27,7 @@ class Payroll extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penggajian';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 
 		$employee = NULL;
@@ -76,7 +76,7 @@ class Payroll extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Penggajian';
 		$data['sub_title']	= 'Detail';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['employees']	= $this->employees->showEmployee($id)->row();
 		$data['data']		= '';

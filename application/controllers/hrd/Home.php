@@ -24,7 +24,7 @@ class Home extends MY_Controller
 		$data['javascript']	= $this->view.'javascript';
 		$data['title']		= 'Beranda';
 		$data['sub_title']	= '';
-		$data['notif']		= $this->general->searchEmployeeAbsence();
+		$data['notif']		= $this->general->countEmployeeAbsence();
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['company']	= $this->db->select('*')->from('company')->get()->row();
 		$data['employees']	= $this->db->select('e.name, t.join_date')->from('employee_pt as t')->join('employees as e', 'e.id = t.employee_id')->limit(8)->order_by('t.join_date', 'DESC')->get();
