@@ -424,10 +424,11 @@ class General extends CI_Model
 		
 		for ($i = 0; $i < count($promotion); $i++){
 			// Search for direct-parent
-			$this->db->select('users.id');
+			$this->db->select('e.name, users.id');
 			$this->db->from('users');
 			$this->db->join('employee_pt AS ep', 'ep.user_id = users.id');
 			$this->db->join('employee_position AS ept', 'ept.employee_id = ep.employee_id');
+			$this->db->join('employees AS e', 'e.id = ep.employee_id');
 			$this->db->where('ept.position_id', $promotion[$i]['position']);
 			
 			$parent = $this->db->get()->result();
@@ -443,12 +444,14 @@ class General extends CI_Model
 			}
 
 			// Search for top-level-parent
-			$query = "	SELECT u.id
+			$query = "	SELECT e.name, u.id
 						FROM users AS u
 						JOIN employee_pt AS ep
 							ON ep.user_id = u.id
 						JOIN employee_position AS ept
 							ON ept.employee_id = ep.employee_id
+						JOIN employees AS e
+							ON e.id = ep.employee_id
 						WHERE ept.position_id = (
 							SELECT parent_id
 							FROM positions
