@@ -559,7 +559,7 @@ class General extends CI_Model
 	{
 		$employees = $this->searchEmployeeAbsence();
 
-		$absences = $this->db->get_where('employment_absences', array('checked' => FALSE))->result();
+		$absences = $this->db->get_where('employment_absences', array('checked' => FALSE, 'receiver' => $this->session->userdata('id')))->result();
 
 		$value = array();
 
