@@ -18,6 +18,14 @@
 
         public function index()
         {
+            $this->db->set('checked', TRUE);
+            $this->db->where('receiver', $this->session->userdata('id'));
+            $this->db->update('employment_promotion');
+
+            $this->db->set('checked', TRUE);
+            $this->db->where('receiver', $this->session->userdata('id'));
+            $this->db->update('employment_absences');
+            
             $data['content']            = $this->view.'content';
             $data['css']                = $this->view.'css';
             $data['javascript']         = $this->view.'javascript';
@@ -27,14 +35,6 @@
             $data['absence']            = $this->general->searchEmployeeAbsence();
             $data['promotion']          = $this->general->countEmployeePromotion(); 
             $data['employee_promotion'] = $this->general->showEmployeePromotion();
-
-            $this->db->set('checked', TRUE);
-            $this->db->where('receiver', $this->session->userdata('id'));
-            $this->db->update('employment_promotion');
-
-            $this->db->set('checked', TRUE);
-            $this->db->where('receiver', $this->session->userdata('id'));
-            $this->db->update('employment_absences');
 
             $this->load->view('includes/main', $data);
         }
