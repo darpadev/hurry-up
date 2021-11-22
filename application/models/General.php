@@ -541,14 +541,24 @@ class General extends CI_Model
 			foreach ($employees as $employee){
 				$data = array(
 					'employee_id' 	=> $employee['id'],
-					'receiver'		=> $person->id
+					'receiver'		=> $person->id,
 				);
+
+				$stored = $this->db->get_where('employment_absences', $data);
 				
-				if ($this->db->get_where('employment_absences', $data)->num_rows() > 0){
-					$this->db->set('checked', FALSE);
-					$this->db->where('receiver', $this->session->userdata('id'));
-					$this->db->update('employment_absences');
-				} else {					
+				if ($stored->num_rows() > 0){
+					if ($stored->row()->created_at == date('Y-m-d')) continue;
+					else if ($stored->row()->created_at != date('Y-m-d')) {
+						$value = array(
+							'created_at'	=> date('Y-m-d'),
+							'checked'		=> FALSE,
+						);
+						$this->db->set($value);
+						$this->db->where('receiver', $this->session->userdata('id'));
+						$this->db->update('employment_absences');
+					}
+				} else {
+					array_push($data, ['created_at' => date('Y-m-d')]);
 					$this->db->insert('employment_absences', $data);
 				}
 			}
