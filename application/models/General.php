@@ -544,7 +544,7 @@ class General extends CI_Model
 					'receiver'		=> $person->id
 				);
 				
-				if ($this->db->select('*')->from('employment_absences')->where($data)->where('checked', TRUE)->get()->num_rows() > 0){
+				if ($this->db->get_where('employment_absences', $data)->num_rows() > 0){
 					$this->db->set('checked', FALSE);
 					$this->db->where('receiver', $this->session->userdata('id'));
 					$this->db->update('employment_absences');
