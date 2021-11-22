@@ -558,9 +558,7 @@ class General extends CI_Model
 						$this->db->update('employment_absences');
 					}
 				} else {
-					array_push($data, array('created_at' => date('Y-m-d')));
-					var_dump($data);
-					die;
+					$data['created_at'] = date('Y-m-d');
 					$this->db->insert('employment_absences', $data);
 				}
 			}
