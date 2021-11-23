@@ -395,6 +395,11 @@ class Employment extends MY_Controller
 			$this->db->insert($this->status_update, $data);
 		}
 
+		if ($this->input->post('status') != MY_Controller::CONTRACT) {
+			$this->db->where('employee_id', $this->uri->segment(4));
+			$this->db->delete('employment_absences'); 
+		}
+
 		$employee_pt = array(
 			'group_id' => $this->input->post('group_id'),
 			'nip' => $this->input->post('nip'),
