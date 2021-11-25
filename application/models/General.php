@@ -547,15 +547,17 @@ class General extends CI_Model
 				$stored = $this->db->get_where('employment_absences', $data);
 				
 				if ($stored->num_rows() > 0){
-					if ($stored->row()->created_at == date('Y-m-d')) continue;
-					else if ($stored->row()->created_at != date('Y-m-d')) {
-						$value = array(
-							'created_at'	=> date('Y-m-d'),
-							'checked'		=> FALSE,
-						);
-						$this->db->set($value);
-						$this->db->where('receiver', $this->session->userdata('id'));
-						$this->db->update('employment_absences');
+					if ($person->id == $this->session->userdata('id')) {
+						if ($stored->row()->created_at == date('Y-m-d')) continue;
+						else if ($stored->row()->created_at != date('Y-m-d')) {
+							$value = array(
+								'created_at'	=> date('Y-m-d'),
+								'checked'		=> FALSE,
+							);
+							$this->db->set($value);
+							$this->db->where('receiver', $this->session->userdata('id'));
+							$this->db->update('employment_absences');
+						}
 					}
 				} else {
 					$data['created_at'] = date('Y-m-d');
