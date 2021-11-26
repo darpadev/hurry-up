@@ -397,7 +397,7 @@ class Employment extends MY_Controller
 
 		if ($this->input->post('status') != MY_Controller::CONTRACT) {
 			$this->db->where('employee_id', $this->uri->segment(4));
-			$this->db->delete('employment_absences'); 
+			$this->db->delete('employment_promotion'); 
 		}
 
 		$employee_pt = array(
