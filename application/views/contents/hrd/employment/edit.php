@@ -169,7 +169,7 @@
             </div>
             <div class="form-group">
               <label>Status Aktif <i style="color: red;">*</i></label>
-              <select name="active_status" class="form-control" required <?= $data->status == MY_Controller::RESIGN ? 'disabled' : '' ?>>
+              <select name="active_status" class="form-control" required <?= $data->status == 'Resign' ? 'disabled' : '' ?>>
                 <option value=""> -- Pilih Status -- </option>
                 <?php foreach ($this->db->get('employment_active_statuses')->result() as $empstat) : ?>
                   <option <?php echo ($data->active_status == $empstat->status) ? 'selected' : ''; ?> value="<?php echo $empstat->id ?>"><?php echo $empstat->status ?></option>
