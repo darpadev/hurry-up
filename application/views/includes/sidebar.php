@@ -1,4 +1,4 @@
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar bg-white elevation-4">
     <a href="<?php echo base_url() ?>" class="brand-link">
       <img src="<?php echo base_url() ?>assets/images/contents/UP.png" alt="" class="brand-image" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $this->db->select('name')->from('company')->get()->row()->name; ?></span>
