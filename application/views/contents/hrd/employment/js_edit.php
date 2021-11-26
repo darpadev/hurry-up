@@ -78,6 +78,13 @@
       $(':input[name="active_status"]').prop('disabled', false);
     }
 
+    if(input_status.val() == 3){
+      $(':input[name="active_status"]').prop('disabled', true);
+      $(':input[name="active_status"]').html(
+        '<option value="" disabled selected> -- Tidak Tersedia -- </option>'
+      );
+    }
+
     if(input_status.val() == 2){
       $('#effective_date').html('Akhir Masa Kontrak');
       $('#contract_duration').show();
