@@ -476,10 +476,10 @@ class Employment extends MY_Controller
 				'doc'			=> $f_content,
 				'uploaded_by'	=> $this->session->userdata('id')
 			);
+			// Insert work_agreement_docs
+			$this->db->insert($this->agreement, $agreement);
 		}
 
-		// Insert work_agreement_docs
-		$this->db->insert($this->agreement, $agreement);
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->session->set_flashdata('error', 'Data pegawai gagal diubah');
