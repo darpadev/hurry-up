@@ -62,7 +62,6 @@ class Auth extends CI_Controller
 
 				$this->db->update('users', array('last_login' => date('Y-m-d H:i:s')), array('id' => $check->result()[0]->user_id));
 
-				$this->general->clearEmployeeAbsence();
 				$this->general->searchEmployeePromotion();
 				$this->general->storeEmployeeAbsence();
 

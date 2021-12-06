@@ -34,7 +34,7 @@ class Employment extends MY_Controller
 		$data['title']			= 'Pegawai';
 		$data['sub_title']		= '';
 		$data['notif']			= $this->general->countEmployeeAbsence();
-		$data['promotion']	= $this->general->countEmployeePromotion();
+		$data['promotion']		= $this->general->countEmployeePromotion();
 		$data['provinces']		= $this->db->get('provinces');
 		$data['cities']			= $this->db->get('cities');
 		$data['districts']		= $this->db->get('districts');

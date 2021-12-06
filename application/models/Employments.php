@@ -336,4 +336,13 @@ class Employments extends CI_Model
 		
 		return $query;
 	}
+
+	public function showEmployeeBrief($id){
+		$this->db->select('e.name, ep.nip, ep.join_date');
+		$this->db->from('employee_pt as ep');
+		$this->db->join('employees as e', 'e.id = ep.employee_id');
+		$this->db->where('e.id', $id);
+
+		return $this->db->get()->row();
+	}
 }

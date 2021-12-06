@@ -53,6 +53,19 @@
     </div>
 <?php endif ?>
 <?php if ($this->session->userdata('role') == MY_Controller::HRD or $this->session->userdata('role') == MY_Controller::EMPLOYEE) : ?>
+    <?php if ($this->session->flashdata('promotion_success')) : ?>
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <i class="icon fas fa-check"></i>
+            <font style="text-align: justify; margin-right: 3%"><?php echo $this->session->flashdata('promotion_success') ?></font>
+        </div>
+    <?php elseif ($this->session->flashdata('promotion_error')) : ?>
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <i class="icon fas fa-ban"></i>
+            <font style="text-align: justify; margin-right: 3%"><?php echo $this->session->flashdata('promotion_error') ?></font>
+        </div>
+    <?php endif; ?>
     <div class="card">
         <div class="card-body">
             <h5 class="font-weight-bold">Pengangkatan Karyawan</h5>
@@ -65,6 +78,7 @@
                         <th class="text-center">Nama</th>
                         <th class="text-center">TMT Kerja</th>
                         <th class="text-center">Lama Bekerja</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +99,32 @@
                             $day = date('j', strtotime($promote['join_date']));
                             ?>
                             <td class="text-center"><?= strftime("%d %B %Y", mktime(0, 0, 0, $month, $day, $year)) ?></td>
-                            <td class="text-center"><?= date_diff(date_create($promote['join_date']), date_create(date('Y-m-d')))->format('%Y tahun %M bulan %D hari') ?></td>
+                            <td class="text-center"><?= date_diff(date_create($promote['join_date']), date_create(date('Y-m-d')))->format('%Y tahun %M bulan') ?></td>
+                            <td class="text-center">
+                                <?php if ($promote['approval_id'] == 1) : ?>
+                                    <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Berikan Penilaian</a>
+                                    <?php else : ?>
+                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                    <?php endif ?>
+                                <?php elseif ($promote['approval_id'] == 2) : ?>
+                                    <?php if (in_array(4, $this->session->userdata('level'))) : ?>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Review</a>
+                                    <?php else : ?>
+                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                    <?php endif ?>
+                                <?php elseif ($promote['approval_id'] == 3) : ?>
+                                    <?php if (in_array(3, $this->session->userdata('level'))) : ?>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Review</a>
+                                    <?php else : ?>
+                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                    <?php endif ?>
+                                <?php endif ?>
+                                    
+                                <?php if ($promote['approval_id'] == 4) : ?>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Hasil Keputusan</a>
+                                <?php endif ?>
+                            </td>
                         </tr>
                     <?php endforeach ?>
                 </tbody>

@@ -506,17 +506,28 @@ class General extends CI_Model
 	{
 		$promotion = array();
 
-		$this->db->select('ep.employee_id, e.name, ep.nip, ep.join_date');
+		$this->db->select('ep.employee_id, e.name, ep.nip, ep.join_date, s.status, s.id AS approval_id');
 		$this->db->from('employee_pt AS ep');
 		$this->db->join('employees AS e', 'e.id = ep.employee_id');
 		$this->db->join('employment_promotion AS prom', 'ep.employee_id = prom.employee_id');
+		$this->db->join('promotion_approval_statuses AS s', 's.id = prom.status');
 		$this->db->where('prom.receiver', $this->session->userdata('id'));
 
 		$employee = $this->db->get()->result();
 
 		foreach ($employee as $value) {
 			if(date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
-				array_push($promotion, array('id' => $value->employee_id, 'name' => $value->name, 'join_date' => $value->join_date, 'nip' => $value->nip));
+				array_push(
+					$promotion, 
+					array(
+							'id' 			=> $value->employee_id, 
+							'name' 			=> $value->name, 
+							'join_date' 	=> $value->join_date, 
+							'nip' 			=> $value->nip,
+							'status'		=> $value->status,
+							'approval_id'	=> $value->approval_id
+						)
+					);
 			}		
 		}
 
@@ -525,43 +536,46 @@ class General extends CI_Model
 
 	public function storeEmployeeAbsence()
 	{
+		$this->db->select('created_at');
+		$this->db->from('employment_absences');
+		
+		$last_date = $this->db->get()->row()->created_at;
+
+		if ($last_date !== NULL And $last_date != date('Y-m-d')) {
+			$this->db->set(	array(
+									'created_at' 	=> date('Y-m-d'),
+									'checked'		=> FALSE,
+								)
+							);
+			$this->db->update('employment_absences');
+		}
+
 		$employees = $this->searchEmployeeAbsence();
 
-		// Search for HRD
-		$this->db->select('e.name, l.user_id AS id');
-		$this->db->from('login AS l');
-		$this->db->join('employee_pt AS ep', 'ep.user_id = l.user_id');
-		$this->db->join('employees AS e', 'e.id = ep.employee_id');
-		$this->db->where('role_id', MY_Controller::HRD);
-
-		$hrd = $this->db->get()->result();
-		
-		// Send information to HRD
-		foreach ($hrd as $person){
+		if (count($employees) > 0) {
 			foreach ($employees as $employee){
-				$data = array(
-					'employee_id' 	=> $employee['id'],
-					'receiver'		=> $person->id,
-				);
+				$check_employee = $this->db->get_where('employment_absences', array('employee_id' => $employee['id']));
+			
+				if($check_employee->num_rows() > 0) continue;
+				else {
+					// Search for HRD
+					$this->db->select('e.name, l.user_id AS id');
+					$this->db->from('login AS l');
+					$this->db->join('employee_pt AS ep', 'ep.user_id = l.user_id');
+					$this->db->join('employees AS e', 'e.id = ep.employee_id');
+					$this->db->where('role_id', MY_Controller::HRD);
 
-				$stored = $this->db->get_where('employment_absences', $data);
-				
-				if ($stored->num_rows() > 0){
-					if ($person->id == $this->session->userdata('id')) {
-						if ($stored->row()->created_at == date('Y-m-d')) continue;
-						else if ($stored->row()->created_at != date('Y-m-d')) {
-							$value = array(
-								'created_at'	=> date('Y-m-d'),
-								'checked'		=> FALSE,
-							);
-							$this->db->set($value);
-							$this->db->where('receiver', $this->session->userdata('id'));
-							$this->db->update('employment_absences');
-						}
+					$hrd = $this->db->get()->result();
+
+					foreach ($hrd as $person) {
+						$data = array(
+							'employee_id'	=> $employee['id'],
+							'receiver'		=> $person->id,
+						);
+
+						$data['created_at'] = date('Y-m-d');
+						$this->db->insert('employment_absences', $data);
 					}
-				} else {
-					$data['created_at'] = date('Y-m-d');
-					$this->db->insert('employment_absences', $data);
 				}
 			}
 		}
@@ -585,18 +599,5 @@ class General extends CI_Model
 		}
 
 		return $value;
-	}
-
-	public function clearEmployeeAbsence()
-	{
-		$this->db->select('employee_id');
-		$this->db->from('employee_pt');
-		$this->db->join('users', 'users.id = employee_pt.user_id');
-		$this->db->where('users.id', $this->session->userdata('id'));
-		
-		$id = $this->db->get()->row()->employee_id;
-
-		$this->db->where('employee_id', $id);
-		$this->db->delete('employment_absences');
 	}
 }

@@ -5,7 +5,7 @@
  * @link            https://burhanmafazi.xyz
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed.');
+defined('BASEPATH') or exit('No direct script access allowed.');
 
 class Home extends MY_Controller
 {
@@ -21,9 +21,9 @@ class Home extends MY_Controller
 
 	public function index()
 	{
-		$data['content']	= $this->view.'dashboard';
+		$data['content']	= $this->view . 'dashboard';
 		$data['css']		= '';
-		$data['javascript']	= $this->view.'javascript-absen';
+		$data['javascript']	= $this->view . 'javascript-absen';
 		$data['title']		= 'Dashboard';
 		$data['sub_title']	= 'Home';
 		$data['message']	= '';
@@ -56,9 +56,9 @@ class Home extends MY_Controller
 
 		$days = array();
 		$periods = new DatePeriod(
-		     $start,
-		     new DateInterval('P1D'),
-		     $finish
+			$start,
+			new DateInterval('P1D'),
+			$finish
 		);
 
 		foreach ($periods as $date) {
@@ -66,7 +66,7 @@ class Home extends MY_Controller
 		}
 		$days[] = $finish->format('Y-m-d');
 
-		$data['total_days']	= $interval->days+1;
+		$data['total_days']	= $interval->days + 1;
 		$data['days']		= $days;
 		$data['available']	= $this->presences->searchEmployeeAvailability($employee, $org_unit, $start, $finish);
 
@@ -81,11 +81,11 @@ class Home extends MY_Controller
 		$org_unit = array();
 
 		$response['employee'] = $this->db->select('ep.employee_id, ep.nip, e.name, e.email, ep.extension')
-		->from('employees as e')
-		->join('employee_pt as ep', 'ep.employee_id = e.id')
-		->where(array('employee_id' => $employee_id))
-		->get()
-		->row();
+			->from('employees as e')
+			->join('employee_pt as ep', 'ep.employee_id = e.id')
+			->where(array('employee_id' => $employee_id))
+			->get()
+			->row();
 
 		$positions = array();
 		$parents = $this->employees->getParentPosition($employee_id)->result();
@@ -111,7 +111,7 @@ class Home extends MY_Controller
 		if ($org_unit) {
 			$org_unit = $org_unit->result();
 		}
-			
+
 		$response['supervisor'] = $supervisor;
 		$response['org_unit'] = $org_unit;
 
@@ -119,7 +119,7 @@ class Home extends MY_Controller
 	}
 
 	public function getDataOrgChart()
-	{		
+	{
 		$employee = $_GET['employee'];
 		$position = $_GET['position'];
 		$response = array();
@@ -157,7 +157,7 @@ class Home extends MY_Controller
 
 			$emp = $this->db->select('employee_id')->from('employee_pt')->where('user_id', $this->session->userdata('id'))->get()->row();
 			$data->employee_id = $emp->employee_id;
-			$data->date = date('Y-m-d');	
+			$data->date = date('Y-m-d');
 			$data->checkin = date('Y-m-d H:i:s');
 			$data->type = self::WFH;
 
@@ -166,16 +166,16 @@ class Home extends MY_Controller
 			} else {
 				$data->status = self::OK;
 			}
-			
+
 			$keterangan = '';
 
-	        $check = $this->db->select('id, employee_id, checkin, checkout')->from('log_presences')->where(array('employee_id' => $emp->employee_id, 'date' => date('Y-m-d')))->get()->row();
+			$check = $this->db->select('id, employee_id, checkin, checkout')->from('log_presences')->where(array('employee_id' => $emp->employee_id, 'date' => date('Y-m-d')))->get()->row();
 
 			if ($check) {
 				$checkLoc = $this->db->get_where('log_remote_presences', array('lat_checkin' => NULL, 'presences_id' => $check->id))->row();
 
 				if ($checkLoc) {
-					for ($i=0; $i <= count((array) $this->input->post('notes')) - 1; $i++) { 
+					for ($i = 0; $i <= count((array) $this->input->post('notes')) - 1; $i++) {
 						$keterangan .= $this->input->post('notes')[$i];
 
 						if ($i < count((array) $this->input->post('notes')) - 1) {
@@ -187,38 +187,41 @@ class Home extends MY_Controller
 
 					if ($this->session->userdata('latitude') != NULL) {
 						if ($this->input->post('condition') == "Sakit") {
-							$this->session->set_flashdata('success','Selamat datang, Anda telah melakukan checkin hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
+							$this->session->set_flashdata('success', 'Selamat datang, Anda telah melakukan checkin hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
 						} else {
-							$this->session->set_flashdata('success','Selamat datang, Anda telah melakukan checkin hari ini. Stay safe and keep healthy!');
+							$this->session->set_flashdata('success', 'Selamat datang, Anda telah melakukan checkin hari ini. Stay safe and keep healthy!');
 						}
 					} else {
-						$this->session->set_flashdata('error','Absensi gagal, harap menyalakan Location atau GPS pada browser atau perangkat Anda terlebih dahulu.');
-					}					
+						$this->session->set_flashdata('error', 'Absensi gagal, harap menyalakan Location atau GPS pada browser atau perangkat Anda terlebih dahulu.');
+					}
 				} else {
 					$datang = new DateTime($check->checkin);
 					$pulang = new DateTime(date('Y-m-d H:i:s'));
 					$diff = $datang->diff($pulang);
-					$durasi = str_pad($diff->h, 2, "0", STR_PAD_LEFT).':'.str_pad($diff->i, 2, "0", STR_PAD_LEFT).':'.str_pad($diff->s, 2, "0", STR_PAD_LEFT);
-					
+					$durasi = str_pad($diff->h, 2, "0", STR_PAD_LEFT) . ':' . str_pad($diff->i, 2, "0", STR_PAD_LEFT) . ':' . str_pad($diff->s, 2, "0", STR_PAD_LEFT);
+
 					$checkout = $this->apimodel->putData('log_presences', array('checkout' => date('Y-m-d H:i:s'), 'duration' => $durasi), $check->id);
 
 					$this->db->update('log_remote_presences', array('lat_checkout' => $this->session->userdata('latitude'), 'long_checkout' => $this->session->userdata('longitude')), array('presences_id' => $check->id));
 
-					if ($checkout) {		
+					if ($checkout) {
 						if ($this->input->post('condition') == "Sakit") {
-							$this->session->set_flashdata('success','Selamat istirahat, Anda telah melakukan checkout hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
+							$this->session->set_flashdata('success', 'Selamat istirahat, Anda telah melakukan checkout hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
 						} else {
-							$this->session->set_flashdata('success','Selamat istirahat, Anda telah melakukan checkout hari ini. Stay safe and keep healthy!');
+							$this->session->set_flashdata('success', 'Selamat istirahat, Anda telah melakukan checkout hari ini. Stay safe and keep healthy!');
 						}
 					}
-				}				
+				}
 			} else {
 				$this->db->trans_begin();
 
 				$checkin = $this->db->insert('log_presences', $data);
 				$last_id = $this->db->insert_id();
 
-				for ($i=0; $i <= count((array) $this->input->post('notes')) - 1; $i++) { 
+				$this->db->where('employee_id', $this->session->userdata('employee'));
+				$this->db->delete('employment_absences');
+
+				for ($i = 0; $i <= count((array) $this->input->post('notes')) - 1; $i++) {
 					$keterangan .= $this->input->post('notes')[$i];
 
 					if ($i < count((array) $this->input->post('notes')) - 1) {
@@ -227,7 +230,7 @@ class Home extends MY_Controller
 				}
 
 				$attr = new \stdClass();
-				
+
 				$attr->presences_id = $last_id;
 				$attr->city = $this->input->post('city');
 				$attr->temperature = $this->input->post('temperature');
@@ -239,23 +242,23 @@ class Home extends MY_Controller
 				$checkin_remote = $this->db->insert('log_remote_presences', $attr);
 
 				if ($this->db->trans_status() === FALSE) {
-				    $this->db->trans_rollback();
+					$this->db->trans_rollback();
 				} else {
-				    $this->db->trans_commit();
+					$this->db->trans_commit();
 				}
 
 				if ($checkin_remote) {
 					$checkLoc = $this->db->get_where('log_remote_presences', array('presences_id' => $last_id))->row();
 
 					if ($checkLoc->lat_checkin == NULL) {
-						$this->session->set_flashdata('error','Absensi gagal, harap menyalakan Location atau GPS pada browser atau perangkat Anda terlebih dahulu.');
+						$this->session->set_flashdata('error', 'Absensi gagal, harap menyalakan Location atau GPS pada browser atau perangkat Anda terlebih dahulu.');
 					} else {
 						if ($this->input->post('condition') == "Sakit") {
-							$this->session->set_flashdata('success','Selamat datang, Anda telah melakukan checkin hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
+							$this->session->set_flashdata('success', 'Selamat datang, Anda telah melakukan checkin hari ini. Istirahat yang cukup dan lakukan physical distancing. Jika keluhan berlanjut segera periksakan diri ke fasilitas kesehatan terdekat.');
 						} else {
-							$this->session->set_flashdata('success','Selamat datang, Anda telah melakukan checkin hari ini. Stay safe and keep healthy!');
+							$this->session->set_flashdata('success', 'Selamat datang, Anda telah melakukan checkin hari ini. Stay safe and keep healthy!');
 						}
-					}															
+					}
 				}
 			}
 
