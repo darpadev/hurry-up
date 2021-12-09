@@ -36,9 +36,9 @@
         </a>
         <div class="dropdown-menu">
           <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
-            <span class="dropdown-header">Ada <?= count($notif) + count($promotion) ?> Pemberitahuan</span>
+            <span class="dropdown-header">Ada <?= count($notif) + count($promotion) ?> Pemberitahuan Baru</span>
           <?php elseif ($this->session->userdata('role') == MY_Controller::EMPLOYEE) : ?>
-            <span class="dropdown-header">Ada <?= count($promotion) ?> Pemberitahuan</span>
+            <span class="dropdown-header">Ada <?= count($promotion) ?> Pemberitahuan Baru</span>
           <?php endif ?>
           <div class="dropdown-divider"></div>
 
@@ -63,7 +63,8 @@
             <?php for ($i = 0; $i < count($promotion); $i++) : ?>
               <?php if ($i > 3) break ?>
               <a href="#" class="dropdown-item text-wrap">
-                <?= $promotion[$i]['name'] . ' sudah bekerja selama 2 tahun' ?>
+                
+                <?= $promotion[$i]->notification ?>
               </a>
               <div class="dropdown-divider"></div>
             <?php endfor ?>

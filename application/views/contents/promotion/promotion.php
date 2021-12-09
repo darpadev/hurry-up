@@ -26,7 +26,7 @@
         <div class="col-8">
             <div class="card card-primary card-outline">
                 <div class="card-body">
-                    <?php if ($approval === NULL) : ?>
+                    <?php if ($approval->message === NULL) : ?>
                         <form action="<?= base_url() ?>promotion/store/" method="post">
                             <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
                             <div class="mb-3">
@@ -88,6 +88,10 @@
 
                             <hr class="border-primary">
 
+                            <div class="mb-3">
+                                <p class="m-0"><span class="badge badge-warning text-dark" style="font-size: 14px">Penilai</span><?= " " . $approval->assessor_name ?></p>
+                            </div>
+
                             <?php if ($approval->manager !== NULL) : ?>
                                 <div class="mb-3">
                                     <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Manajer</span><?= " " . $approval->manager ?></p>
@@ -98,16 +102,38 @@
                                 <div class="mb-3">
                                     <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Direktur</span><?= " " . $approval->director ?></p>
                                 </div>
+
+                                <hr class="border-primary">
+
                                 <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
-                                    <div class="text-right">
-                                        <a href="<?= base_url() . "hrd/employment/show/" . $this->uri->segment(3) ?>" class="btn btn-success">Perbaharui Status</a>
-                                    </div>
+                                    <?php if ($status_update === NULL) : ?>
+                                        <div class="text-right">
+                                            <a href="<?= base_url() . "hrd/employment/show/" . $this->uri->segment(3) ?>" class="btn btn-success">Perbaharui Status</a>
+                                        </div>
+                                    <?php elseif ($status_update !== NULL And in_array(51, $this->session->userdata('position'))) : ?>
+                                        <div class="mb-3">
+                                            <p class=""><span class="badge badge-warning text-dark" style="font-size: 14px">Status diubah oleh</span><?= " " . $status_update->assessor_name ?></p>
+                                            <p class="font-weight-bold"><?= $status_update->status_name . ' ' . $status_update->active_name ?></p>
+                                        </div>
+                                        <div class="text-right">
+                                            <form action="<?= base_url() . "hrd/employment/approve_status" ?>" method="post">
+                                                <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
+                                                <input type="hidden" name="status" value="<?= $status_update->status ?>">
+                                                <input type="hidden" name="active_status" value="<?= $status_update->active_status ?>">
+                                                <input type="hidden" name="effective_date" value="<?= $status_update->effective_date ?>">
+                                                <button class="btn btn-info">Approve Perubahan Status</button>
+                                            </form>
+                                        </div>
+                                    <?php endif ?>
                                 <?php endif ?>
                             <?php endif ?>
 
-                            <?php if ($approval->manager === NULL Or $approval->director === NULL Or $approval->revision) : ?>
-                                <hr class="border-primary">
-    
+                            <?php if ($approval->manager === NULL Or $approval->director === NULL) : ?>
+
+                                <?php if ($approval->manager !== NULL ) : ?>
+                                    <hr class="border-primary">
+                                <?php endif ?>
+
                                 <form action="<?= base_url() ?>promotion/update" method="post">
                                     <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
                                     <div class="radio align-items-center">

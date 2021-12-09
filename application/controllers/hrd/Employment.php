@@ -5,7 +5,7 @@
  * @link            https://linktr.ee/m.hutomo
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed.');
+defined('BASEPATH') or exit('No direct script access allowed.');
 
 class Employment extends MY_Controller
 {
@@ -28,9 +28,9 @@ class Employment extends MY_Controller
 
 	public function index()
 	{
-		$data['content']		= $this->view.'content';
-		$data['css']			= $this->view.'css';
-		$data['javascript']		= $this->view.'js_content';
+		$data['content']		= $this->view . 'content';
+		$data['css']			= $this->view . 'css';
+		$data['javascript']		= $this->view . 'js_content';
 		$data['title']			= 'Pegawai';
 		$data['sub_title']		= '';
 		$data['notif']			= $this->general->countEmployeeAbsence();
@@ -68,12 +68,12 @@ class Employment extends MY_Controller
 			$status = $_GET['status'];
 		}
 
-		if (isset($_GET['active_status']) && $_GET['active_status'] != 'Semua'){
+		if (isset($_GET['active_status']) && $_GET['active_status'] != 'Semua') {
 			$active_status = $_GET['active_status'];
 		}
 
 		$result = $this->employments->searchEmployeeByFilter($group, $position, $org_unit, $status, $active_status);
-		
+
 		$data['data']	= $result;
 		$data['employee_null_position'] = $this->employments->getEmployeeNullPosition($status);
 
@@ -82,8 +82,8 @@ class Employment extends MY_Controller
 
 	public function show()
 	{
-		$data['content']	= $this->view.'show';
-		$data['css']		= $this->view.'css';
+		$data['content']	= $this->view . 'show';
+		$data['css']		= $this->view . 'css';
 		$data['javascript']	= '';
 		$data['title']		= 'Pegawai';
 		$data['sub_title']	= 'Detail';
@@ -92,7 +92,7 @@ class Employment extends MY_Controller
 		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['employee']	= $this->employments->showEmployee($this->uri->segment(4))->row();
 
-		if (!isset($data['employee'])) {	
+		if (!isset($data['employee'])) {
 			$this->session->set_flashdata('error', 'Data pegawai tidak ditemukan');
 			redirect('hrd/employment');
 		}
@@ -102,16 +102,16 @@ class Employment extends MY_Controller
 		// $data['overtimes']	= $this->employments->showEmployeeOvertime($this->uri->segment(4));
 
 		$mulai = $data['employee']->join_date;
-		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)). " + 1 year"));
-		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)). " - 1 day"));
+		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)) . " + 1 year"));
+		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)) . " - 1 day"));
 		$diff = abs(strtotime(date('Y-m-d')) - strtotime($mulai));
-		$years = floor($diff / (365*60*60*24));
+		$years = floor($diff / (365 * 60 * 60 * 24));
 		$periode = array();
 
-		for ($i=0; $i <= $years ; $i++) { 
+		for ($i = 0; $i <= $years; $i++) {
 			if ($i > 0) {
-				$mulai =  date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)). " + 1 year"));
-				$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)). " + 1 year"));
+				$mulai =  date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)) . " + 1 year"));
+				$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)) . " + 1 year"));
 			}
 
 			$join['start'] = $mulai;
@@ -146,21 +146,21 @@ class Employment extends MY_Controller
 			}
 		}
 
-		$data['count_leave']= $sum;
+		$data['count_leave'] = $sum;
 
 		$this->load->view('includes/main', $data);
 	}
 
 	public function store()
 	{
-		if ($this->db->get_where('employee_pt', $this->input->post('nip'))->num_rows() > 0) {			
+		if ($this->db->get_where('employee_pt', $this->input->post('nip'))->num_rows() > 0) {
 			$this->session->set_flashdata('error', 'NIP pegawai telah terdaftar');
 			redirect($_SERVER['HTTP_REFERER']);
 		}
 
 		$this->db->trans_begin();
 
-		$employees = array(			
+		$employees = array(
 			'name' => $this->input->post('name'),
 			'religion' => $this->input->post('religion'),
 			'sex' => $this->input->post('sex'),
@@ -183,7 +183,7 @@ class Employment extends MY_Controller
 			'username' => $this->input->post('nip'),
 			'password' => md5($this->input->post('nip')),
 			'created_by' => $this->session->userdata('id'),
-			'updated_by' => $this->session->userdata('id')			
+			'updated_by' => $this->session->userdata('id')
 		);
 
 		$login = array(
@@ -191,12 +191,12 @@ class Employment extends MY_Controller
 			'created_by' => $this->session->userdata('id')
 		);
 
-		if($this->input->post('active_status') === NULL){
+		if ($this->input->post('active_status') === NULL) {
 			$active_status = NULL;
-		}else{
+		} else {
 			$active_status = $this->input->post('active_status');
 		}
-		
+
 		$employee_pt = array(
 			'group_id' => $this->input->post('group_id'),
 			'nip' => $this->input->post('nip'),
@@ -234,7 +234,7 @@ class Employment extends MY_Controller
 			$employee_id = $this->db->insert_id();
 
 			if ($employee_id) {
-				for ($x=0; $x < count($this->input->post('educations')); $x++) {			
+				for ($x = 0; $x < count($this->input->post('educations')); $x++) {
 					$educations = array(
 						'employee_id' => $employee_id,
 						'level' => $this->input->post('educations')[$x],
@@ -255,7 +255,7 @@ class Employment extends MY_Controller
 
 				// Insert status_updates
 				$this->db->insert(
-					$this->status_update, 
+					$this->status_update,
 					array(
 						'employee_id' 	=> $employee_id,
 						'status'		=> $this->input->post('status'),
@@ -266,8 +266,8 @@ class Employment extends MY_Controller
 
 				// Work Agreement File Upload
 				$file = $_FILES['work_agreement_file'];
-		
-				if(strlen($file['name'])){
+
+				if (strlen($file['name'])) {
 					$f_name = $file['name'];
 					$f_type = $file['type'];
 					$f_content = file_get_contents($file['tmp_name']);
@@ -303,20 +303,20 @@ class Employment extends MY_Controller
 		}
 
 		if ($this->db->trans_status() === FALSE) {
-	        $this->db->trans_rollback();
-	    } else {
+			$this->db->trans_rollback();
+		} else {
 			$this->session->set_flashdata('success', 'Pegawai berhasil ditambahkan');
-	        $this->db->trans_commit();
-	    }
-		
-		redirect('/hrd/employment/show/'.$employee_id);
+			$this->db->trans_commit();
+		}
+
+		redirect('/hrd/employment/show/' . $employee_id);
 	}
 
 	public function edit()
 	{
-		$data['content']	= $this->view.'edit';
-		$data['css']		= $this->view.'css';
-		$data['javascript']	= $this->view.'js_edit';
+		$data['content']	= $this->view . 'edit';
+		$data['css']		= $this->view . 'css';
+		$data['javascript']	= $this->view . 'js_edit';
 		$data['title']		= 'Pegawai';
 		$data['sub_title']	= 'Ubah';
 		$data['notif']		= $this->general->countEmployeeAbsence();
@@ -357,7 +357,7 @@ class Employment extends MY_Controller
 			$district_id = $this->input->post('district_id');
 		}
 
-		$employees = array(			
+		$employees = array(
 			'name' => $this->input->post('name'),
 			'religion' => $this->input->post('religion'),
 			'sex' => $this->input->post('sex'),
@@ -375,42 +375,75 @@ class Employment extends MY_Controller
 			'updated_by' => $this->session->userdata('id')
 		);
 
-		if($this->input->post('active_status') === NULL){
+		if ($this->input->post('active_status') === NULL) {
 			$active_status = NULL;
-		}else{
+		} else {
 			$active_status = $this->input->post('active_status');
 		}
 
 		$check_status = $this->employments->getCurrentStatus($this->uri->segment(4))->row();
 
-		if($check_status->status != $this->input->post('status') || $check_status->active_status != $this->input->post('active_status')){
+		if ($check_status->status != $this->input->post('status') || $check_status->active_status != $this->input->post('active_status')) {
 			$data = array(
 				'employee_id' => $this->uri->segment(4),
 				'status' => $this->input->post('status'),
 				'active_status' => $this->input->post('active_status'),
+				'effective_date' => $this->input->post('effective_date'),
 				'updated_by' => $this->session->userdata('id')
 			);
-			
+
 			// Insert status_updates
 			$this->db->insert($this->status_update, $data);
-		}
 
-		if ($this->input->post('status') != MY_Controller::CONTRACT) {
-			$this->db->where('employee_id', $this->uri->segment(4));
-			$this->db->delete('employment_promotion'); 
+			if ($this->input->post('status') != MY_Controller::CONTRACT) {
+				if (in_array(4, $this->session->userdata('level'))) {					
+					$this->db->where('employee_id', $this->uri->segment(4));
+					$this->db->delete('employment_promotion');
+	
+					$this->db->where('employee_id', $this->uri->segment(4));
+					$this->db->delete('promotion_approval');
+				} else {
+					$this->db->set('status_request', TRUE);
+					$this->db->where('employee_id', $this->uri->segment(4));
+					$this->db->update('promotion_approval');
+
+					$this->db->select('users.id');
+					$this->db->from('users');
+					$this->db->join('employee_pt', 'employee_pt.user_id = users.id');
+					$this->db->join('employee_position', 'employee_pt.employee_id = employee_position.employee_id');
+					// 51 is position id for SDM Manager
+					$this->db->where('employee_position.position_id', 51);
+
+					$m_sdm = $this->db->get()->row();
+					$m_sdm = $m_sdm->id;
+
+					$assessor_name = $this->db->select('name')->from('employees')->where('id', $this->session->userdata('employee'))->get()->row();
+					$assessor_name = $assessor_name->name;
+
+					// Update employment_promotion
+					$this->db->set('checked', FALSE);
+					$this->db->set('notification', $assessor_name . ' telah memberikan penilaian untuk pengangkatan ' . $this->input->post('name'));
+					$this->db->where('employee_id', $this->uri->segment(4));
+					$this->db->where('receiver', $m_sdm);
+					$this->db->update('employment_promotion');
+				}
+			}
 		}
 
 		$employee_pt = array(
 			'group_id' => $this->input->post('group_id'),
 			'nip' => $this->input->post('nip'),
 			'rfid' => $this->input->post('rfid'),
-			'status' => $this->input->post('status'),
-			'active_status' => $active_status,
 			'work_agreement_status' => $this->input->post('work_agreement_status'),
 			'join_date' => $this->input->post('join_date'),
-			'effective_date' => $this->input->post('effective_date'),
 			'updated_by' => $this->session->userdata('id')
 		);
+		
+		if (in_array(4, $this->session->userdata('level'))) {
+			$employee_pt['effective_date'] 	= $this->input->post('effective_date');
+			$employee_pt['status'] 			= $this->input->post('status');
+			$employee_pt['active_status'] 	= $active_status;
+		}
 
 		$employee_position = array(
 			'position_id' => $this->input->post('position_id'),
@@ -419,13 +452,13 @@ class Employment extends MY_Controller
 		);
 
 		$ept_id = $this->input->post('employee_position_id');
-		
+
 		// Insert employee_pt
 		$this->db->where('employee_id', $this->uri->segment(4))->update($this->employee_pt, $employee_pt);
 
 		// echo $this->db->last_query();die();
 		// if ($this->input->post('province_id') && $this->input->post('city_id') && $this->input->post('district_id')) {
-			$this->db->where('id', $this->uri->segment(4))->update($this->employee, $employees);
+		$this->db->where('id', $this->uri->segment(4))->update($this->employee, $employees);
 
 		// echo $this->db->last_query();
 		// die();	
@@ -435,7 +468,7 @@ class Employment extends MY_Controller
 
 		$this->db->where('id', $ept_id)->update($this->employee_position, $employee_position);
 
-		for ($x=0; $x < count($this->input->post('u_educations')); $x++) {	
+		for ($x = 0; $x < count($this->input->post('u_educations')); $x++) {
 			$edu_id = $this->input->post('u_education_id')[$x];
 
 			$u_educations = array(
@@ -448,7 +481,7 @@ class Employment extends MY_Controller
 			$this->db->where('id', $edu_id)->update($this->educations, $u_educations);
 		}
 
-		for ($y=0; $y < count($this->input->post('educations')); $y++) {			
+		for ($y = 0; $y < count($this->input->post('educations')); $y++) {
 			$educations = array(
 				'employee_id' => $this->uri->segment(4),
 				'level' => $this->input->post('educations')[$y],
@@ -463,8 +496,8 @@ class Employment extends MY_Controller
 
 		// Work Agreement File Upload
 		$file = $_FILES['work_agreement_file'];
-		
-		if(strlen($file['name'])){
+
+		if (strlen($file['name'])) {
 			$f_name = $file['name'];
 			$f_type = $file['type'];
 			$f_content = file_get_contents($file['tmp_name']);
@@ -483,19 +516,19 @@ class Employment extends MY_Controller
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->session->set_flashdata('error', 'Data pegawai gagal diubah');
-	        $this->db->trans_rollback();
-	        redirect($_SERVER['HTTP_REFERER']);
-	    } else {
-	    	$this->session->set_flashdata('success', 'Data pegawai berhasil diubah');
-	        $this->db->trans_commit();
-	    }
+			$this->db->trans_rollback();
+			redirect($_SERVER['HTTP_REFERER']);
+		} else {
+			$this->session->set_flashdata('success', 'Data pegawai berhasil diubah');
+			$this->db->trans_commit();
+		}
 
-		redirect('/hrd/employment/show/'.$this->uri->segment(4));
+		redirect('/hrd/employment/show/' . $this->uri->segment(4));
 	}
 
 	public function delete_education()
 	{
-		try {	
+		try {
 			$this->db->trans_begin();
 
 			if ($this->db->where('id', $this->uri->segment(4))->delete($this->educations)) {
@@ -509,10 +542,10 @@ class Employment extends MY_Controller
 			}
 
 			if ($this->db->trans_status() === FALSE) {
-		        $this->db->trans_rollback();
-		    } else {		    	
-		        $this->db->trans_commit();
-		    }
+				$this->db->trans_rollback();
+			} else {
+				$this->db->trans_commit();
+			}
 		} catch (Exception $e) {
 			$this->session->set_flashdata('error', $e->getMessage());
 		}
@@ -522,14 +555,14 @@ class Employment extends MY_Controller
 
 	public function delete()
 	{
-		try {	
+		try {
 			$this->db->trans_begin();
 
 			if (
-			$this->db->where('user_id', $this->uri->segment(5))->delete($this->login) &&
-			$this->db->where('employee_id', $this->uri->segment(4))->delete($this->employee_pt) &&
-			$this->db->where('id', $this->uri->segment(5))->delete($this->user) &&
-			$this->db->where('id', $this->uri->segment(4))->delete($this->employee)
+				$this->db->where('user_id', $this->uri->segment(5))->delete($this->login) &&
+				$this->db->where('employee_id', $this->uri->segment(4))->delete($this->employee_pt) &&
+				$this->db->where('id', $this->uri->segment(5))->delete($this->user) &&
+				$this->db->where('id', $this->uri->segment(4))->delete($this->employee)
 			) {
 				$this->session->set_flashdata('success', 'Pegawai berhasil dihapus');
 			} else {
@@ -541,10 +574,10 @@ class Employment extends MY_Controller
 			}
 
 			if ($this->db->trans_status() === FALSE) {
-		        $this->db->trans_rollback();
-		    } else {		    	
-		        $this->db->trans_commit();
-		    }
+				$this->db->trans_rollback();
+			} else {
+				$this->db->trans_commit();
+			}
 		} catch (Exception $e) {
 			$this->session->set_flashdata('error', $e->getMessage());
 		}
@@ -554,7 +587,35 @@ class Employment extends MY_Controller
 
 	public function agreement()
 	{
-		$data['agreement'] = $this->employments->showAgreement($this->uri->segment(4))->row(); 
-		$this->load->view($this->view.'agreement', $data);
+		$data['agreement'] = $this->employments->showAgreement($this->uri->segment(4))->row();
+		$this->load->view($this->view . 'agreement', $data);
+	}
+
+	public function approve_status()
+	{
+		$this->db->trans_begin();
+
+		$this->db->set('status', $this->input->post('status'));
+		$this->db->set('active_status', $this->input->post('active_status'));
+		$this->db->set('effective_date', $this->input->post('effective_date'));
+		$this->db->where('employee_id', $this->input->post('employee_id'));
+		$this->db->update('employee_pt');
+
+		$this->db->where('employee_id', $this->input->post('employee_id'));
+		$this->db->delete('employment_promotion');
+	
+		$this->db->where('employee_id', $this->input->post('employee_id'));
+		$this->db->delete('promotion_approval');
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->session->set_flashdata('error', 'Data pegawai gagal diubah');
+			$this->db->trans_rollback();
+			redirect($_SERVER['HTTP_REFERER']);
+		} else {
+			$this->session->set_flashdata('success', 'Data pegawai berhasil diubah');
+			$this->db->trans_commit();
+		}
+
+		redirect(base_url() . "hrd/employment/show/" . $this->input->post('employee_id'));
 	}
 }

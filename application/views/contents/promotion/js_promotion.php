@@ -2,6 +2,18 @@
     const reason = $('#reason');
     const add_reason = $('#add');
     const delete_reason = $('#delete');
+
+    // Disable "Enter" input to prevent accidental input
+    $(':input[name="reason[]"]').keypress(function(event) {
+        if (event.keyCode == 13 || event.which == 13){
+            reason.append(`
+                <input type="text" name="reason[]" class="form-control mt-2" placeholder="Dasar Pertimbangan" required>
+            `);
+
+            event.preventDefault();
+            return false;
+        }
+    })
     
     $(add_reason).click(function(event) {
         reason.append(`

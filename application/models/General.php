@@ -417,21 +417,29 @@ class General extends CI_Model
 
 		$hrd = $this->db->get()->result();
 		
-		// Send information to HRD
-		foreach ($hrd as $person){
-			for ($i = 0; $i < count($promotion); $i++) {
+		for ($i = 0; $i < count($promotion); $i++) {
+			if ($this->db->get_where('promotion_approval', array('employee_id' => $promotion[$i]['id']))->num_rows() > 0) continue;
+			
+			$this->db->insert('promotion_approval', array('employee_id' => $promotion[$i]['id'], 'status' => 1));
+			
+			// Send information to HRD
+			foreach ($hrd as $person) {
 				$data = array(
 					'employee_id' 	=> $promotion[$i]['id'],
-					'receiver'		=> $person->id
+					'receiver'		=> $person->id,
 				);
 				
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
+
 				$this->db->insert('employment_promotion', $data);
+				
+				$this->db->set('notification', $promotion[$i]['name'] . ' telah bekerja selama 2 tahun');
+				$this->db->where($data);
+				$this->db->update('employment_promotion');
+
 				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
-		}
-		
-		for ($i = 0; $i < count($promotion); $i++){
+			
 			// Search for direct-parent
 			$this->db->select('e.name, users.id');
 			$this->db->from('users');
@@ -445,11 +453,17 @@ class General extends CI_Model
 			foreach ($parent as $person) {
 				$data = array(
 					'employee_id'	=> $promotion[$i]['id'],
-					'receiver'		=> $person->id
+					'receiver'		=> $person->id,
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
+
+				$this->db->set('notification', $promotion[$i]['name'] . ' telah bekerja selama 2 tahun');
+				$this->db->where($data);
+				$this->db->update('employment_promotion');
+
 				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
+
 			}
 
 			// Search for top-level-parent
@@ -466,15 +480,20 @@ class General extends CI_Model
 							FROM positions
 							WHERE org_unit = ? AND level < 5)";
 			
-			$parent = $this->db->query($query, array($promotion[$i]['position']))->result();			
-
+			$parent = $this->db->query($query, array($promotion[$i]['position']))->result();
+			
 			foreach ($parent as $person) {
 				$data = array(
 					'employee_id'	=> $promotion[$i]['id'],
-					'receiver'		=> $person->id
+					'receiver'		=> $person->id,
 				);
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 				$this->db->insert('employment_promotion', $data);
+
+				$this->db->set('notification', $promotion[$i]['name'] . ' telah bekerja selama 2 tahun');
+				$this->db->where($data);
+				$this->db->update('employment_promotion');
+
 				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
 		}
@@ -482,22 +501,26 @@ class General extends CI_Model
 
 	public function countEmployeePromotion()
 	{
-		$promotion = array();
+		// $promotion = array();
 
-		$this->db->select('e.name, ep.join_date');
-		$this->db->from('employee_pt AS ep');
-		$this->db->join('employees AS e', 'e.id = ep.employee_id');
-		$this->db->join('employment_promotion AS prom', 'ep.employee_id = prom.employee_id');
+		// $this->db->select('e.name, ep.join_date');
+		// $this->db->from('employee_pt AS ep');
+		// $this->db->join('employees AS e', 'e.id = ep.employee_id');
+		// $this->db->join('employment_promotion AS prom', 'ep.employee_id = prom.employee_id');
+		$this->db->select('notification');
+		$this->db->from('employment_promotion AS prom');
 		$this->db->where('prom.receiver', $this->session->userdata('id'));
 		$this->db->where('prom.checked', FALSE);
 
-		$employee = $this->db->get()->result();
+		// $employee = $this->db->get()->result();
 		
-		foreach ($employee as $value) {
-			if(date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
-				array_push($promotion, array('name' => $value->name));
-			}		
-		}
+		// foreach ($employee as $value) {
+		// 	if(date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
+		// 		array_push($promotion, array('name' => $value->name));
+		// 	}		
+		// }
+		$promotion = $this->db->get()->result();
+
 		
 		return $promotion;
 	}
@@ -510,8 +533,10 @@ class General extends CI_Model
 		$this->db->from('employee_pt AS ep');
 		$this->db->join('employees AS e', 'e.id = ep.employee_id');
 		$this->db->join('employment_promotion AS prom', 'ep.employee_id = prom.employee_id');
-		$this->db->join('promotion_approval_statuses AS s', 's.id = prom.status');
+		$this->db->join('promotion_approval AS pa', 'pa.employee_id = prom.employee_id');
+		$this->db->join('promotion_approval_statuses AS s', 's.id = pa.status');
 		$this->db->where('prom.receiver', $this->session->userdata('id'));
+		$this->db->group_by('employee_id');
 
 		$employee = $this->db->get()->result();
 
