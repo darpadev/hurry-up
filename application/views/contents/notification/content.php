@@ -87,42 +87,42 @@
                         <tr>
                             <td class="text-center"><?= $no++; ?></td>
                             <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
-                                <td class="text-center"><a href="<?= base_url() . 'hrd/employment/show/' . $promote['id'] ?>"><?= $promote['nip'] ?></a></td>
-                                <td><a href="<?= base_url() . 'hrd/employment/show/' . $promote['id'] ?>"><?= $promote['name'] ?></a></td>
+                                <td class="text-center"><a href="<?= base_url() . 'hrd/employment/show/' . $promote->id ?>"><?= $promote->nip ?></a></td>
+                                <td><a href="<?= base_url() . 'hrd/employment/show/' . $promote->id ?>"><?= $promote->name ?></a></td>
                             <?php elseif ($this->session->userdata('role') == MY_Controller::EMPLOYEE) : ?>
-                                <td class="text-center"><?= $promote['nip'] ?></td>
-                                <td class="text-center"><?= $promote['name'] ?></td>
+                                <td class="text-center"><?= $promote->nip ?></td>
+                                <td class="text-center"><?= $promote->name ?></td>
                             <?php endif ?>
                             <?php
-                            $year = date('Y', strtotime($promote['join_date']));
-                            $month = date('n', strtotime($promote['join_date']));
-                            $day = date('j', strtotime($promote['join_date']));
+                            $year = date('Y', strtotime($promote->join_date));
+                            $month = date('n', strtotime($promote->join_date));
+                            $day = date('j', strtotime($promote->join_date));
                             ?>
                             <td class="text-center"><?= strftime("%d %B %Y", mktime(0, 0, 0, $month, $day, $year)) ?></td>
-                            <td class="text-center"><?= date_diff(date_create($promote['join_date']), date_create(date('Y-m-d')))->format('%Y tahun %M bulan') ?></td>
+                            <td class="text-center"><?= date_diff(date_create($promote->join_date), date_create(date('Y-m-d')))->format('%Y tahun %M bulan') ?></td>
                             <td class="text-center">
-                                <?php if ($promote['approval_id'] == 1) : ?>
+                                <?php if ($promote->approval_id == 1) : ?>
                                     <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
-                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Berikan Penilaian</a>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote->id ?>" class="btn btn-sm btn-primary">Berikan Penilaian</a>
                                     <?php else : ?>
-                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                        <p class="m-0 badge badge-primary"><?= $promote->status ?></p>
                                     <?php endif ?>
-                                <?php elseif ($promote['approval_id'] == 2) : ?>
+                                <?php elseif ($promote->approval_id == 2) : ?>
                                     <?php if (in_array(4, $this->session->userdata('level'))) : ?>
-                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Review</a>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote->id ?>" class="btn btn-sm btn-primary">Review</a>
                                     <?php else : ?>
-                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                        <p class="m-0 badge badge-primary"><?= $promote->status ?></p>
                                     <?php endif ?>
-                                <?php elseif ($promote['approval_id'] == 3) : ?>
+                                <?php elseif ($promote->approval_id == 3) : ?>
                                     <?php if (in_array(3, $this->session->userdata('level'))) : ?>
-                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Review</a>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote->id ?>" class="btn btn-sm btn-primary">Review</a>
                                     <?php else : ?>
-                                        <p class="m-0 badge badge-primary"><?= $promote['status'] ?></p>
+                                        <p class="m-0 badge badge-primary"><?= $promote->status ?></p>
                                     <?php endif ?>
                                 <?php endif ?>
                                     
-                                <?php if ($promote['approval_id'] == 4) : ?>
-                                        <a href="<?= base_url() ?>promotion/form/<?= $promote['id'] ?>" class="btn btn-sm btn-primary">Hasil Keputusan</a>
+                                <?php if ($promote->approval_id == 4) : ?>
+                                        <a href="<?= base_url() ?>promotion/form/<?= $promote->id ?>" class="btn btn-sm btn-primary">Hasil Keputusan</a>
                                 <?php endif ?>
                             </td>
                         </tr>

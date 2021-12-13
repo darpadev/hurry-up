@@ -8,9 +8,9 @@
  * @link            https://burhanmafazi.xyz
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class General extends CI_Model 
+class General extends CI_Model
 {
 	public function searchEmployeeAbsence()
 	{
@@ -49,8 +49,8 @@ class General extends CI_Model
 			$holiday = $this->db->select('day_off')->from('holiday')->get()->result();
 
 			$now = date('Y-m-d');
-			for ($i=0; $i < $day; $i++) {
-				$now = date('Y-m-d', strtotime(date('Y-m-d', strtotime($now)). " - 1 day"));
+			for ($i = 0; $i < $day; $i++) {
+				$now = date('Y-m-d', strtotime(date('Y-m-d', strtotime($now)) . " - 1 day"));
 
 				foreach ($holiday as $hol) {
 					if ($hol->day_off == $now) {
@@ -63,8 +63,8 @@ class General extends CI_Model
 				$curr = $dt->format('D');
 
 				if ($curr == 'Sat' || $curr == 'Sun') {
-			        $day--;
-			    }
+					$day--;
+				}
 			}
 
 			if (date('Y-m-d') > $key['date']) {
@@ -90,7 +90,7 @@ class General extends CI_Model
 			fp.position,
 			(select count(ep.employee_id) from employee_pt as ep where ep.functional_position_id = fp.id and ep.group_id = 2) as total
 			')
-		->from('functional_position as fp');
+			->from('functional_position as fp');
 
 		return $this->db->get();
 	}
@@ -101,8 +101,8 @@ class General extends CI_Model
 			ep.latest_education,
 			(select count(ep2.employee_id) from employee_pt as ep2 where ep2.group_id = 2 and ep2.latest_education = ep.latest_education) as total
 			')
-		->from('employee_pt as ep')
-		->group_by('ep.latest_education');
+			->from('employee_pt as ep')
+			->group_by('ep.latest_education');
 
 		return $this->db->get();
 	}
@@ -111,15 +111,15 @@ class General extends CI_Model
 	{
 		if ($parent_id) {
 			$this->db->select('parent_id');
-		    $this->db->from('positions');
-		    $this->db->where('id', $parent_id);
-		    $child = $this->db->get()->row_array();
+			$this->db->from('positions');
+			$this->db->where('id', $parent_id);
+			$child = $this->db->get()->row_array();
 
-		    $parents[] = $parent_id;
+			$parents[] = $parent_id;
 
-		    if ($child['parent_id']) {
-		    	$this->getParentPositions($child['parent_id'], $parents);
-		    }
+			if ($child['parent_id']) {
+				$this->getParentPositions($child['parent_id'], $parents);
+			}
 		}
 
 		return $parents;
@@ -141,7 +141,7 @@ class General extends CI_Model
 		foreach ($tree->result() as $value) {
 			$childs[] = $value->id;
 		}
-		
+
 		return $childs;
 	}
 
@@ -205,7 +205,7 @@ class General extends CI_Model
 		$this->db->where('ept.flag', TRUE);
 		$this->db->where_in('p.id', $positions);
 
-		if ($level) {			
+		if ($level) {
 			$this->db->where_in('p.level', $level);
 		}
 
@@ -236,7 +236,7 @@ class General extends CI_Model
 		$this->db->join('employees as e', 'ep.employee_id = e.id');
 		$this->db->where('o.is_active', TRUE);
 
-		if ($org) {			
+		if ($org) {
 			$this->db->where_in('o.id', $org);
 		}
 
@@ -257,21 +257,21 @@ class General extends CI_Model
 		$this->db->join('employee_pt as ep', 'ep.user_id = u.id');
 		$this->db->join('employees as e', 'ep.employee_id = e.id');
 
-		if ($is_active) {			
+		if ($is_active) {
 			$this->db->where('o.is_active', TRUE);
 		} else {
-			$this->db->where('o.is_active', FALSE);			
+			$this->db->where('o.is_active', FALSE);
 		}
 
-		if ($org_unit) {			
+		if ($org_unit) {
 			$this->db->where('o.id', $org_unit);
 		}
 
-		if ($type) {			
+		if ($type) {
 			$this->db->where('o.type_id', $type);
 		}
 
-		if ($level) {			
+		if ($level) {
 			$this->db->where('o.level', $level);
 		}
 
@@ -311,14 +311,14 @@ class General extends CI_Model
 		if ($is_active) {
 			$this->db->where('t.is_active', TRUE);
 		} else {
-			$this->db->where('t.is_active', FALSE);			
+			$this->db->where('t.is_active', FALSE);
 		}
 
-		if ($org_unit) {			
+		if ($org_unit) {
 			$this->db->where('d.id', $org_unit);
 		}
 
-		if ($position) {			
+		if ($position) {
 			$this->db->where('t.id', $position);
 		}
 
@@ -326,7 +326,7 @@ class General extends CI_Model
 
 		$query = $this->db->get();
 		return $query;
-	} 
+	}
 
 	public function getActivePositions()
 	{
@@ -342,7 +342,7 @@ class General extends CI_Model
 
 		$query = $this->db->get();
 		return $query;
-	} 
+	}
 
 	public function getCoworker($org_unit = NULL, $level = NULL)
 	{
@@ -353,11 +353,11 @@ class General extends CI_Model
 		$this->db->join('positions as p', 'p.id = ept.position_id');
 		$this->db->where('ep.employee_id !=', $this->session->userdata('employee'));
 
-		if ($org_unit) {			
+		if ($org_unit) {
 			$this->db->where_in('p.org_unit', $org_unit);
 		}
 
-		if ($level) {			
+		if ($level) {
 			$this->db->where_in('p.level', $level);
 		}
 
@@ -389,19 +389,18 @@ class General extends CI_Model
 		$this->db->where('ep.status', MY_Controller::CONTRACT);
 		$this->db->where('p.level >', 4);
 
-		
 		$employee = $this->db->get()->result();
-		
+
 		$promotion = array();
-		
-		foreach ($employee as $value){
-			if (date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
+
+		foreach ($employee as $value) {
+			if (date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))) {
 				array_push(
-					$promotion, 
+					$promotion,
 					array(
-						'id' => $value->employee_id, 
-						'position' => $value->parent_id, 
-						'nip' => $value->nip, 
+						'id' => $value->employee_id,
+						'position' => $value->parent_id,
+						'nip' => $value->nip,
 						'name' => $value->name
 					)
 				);
@@ -416,30 +415,30 @@ class General extends CI_Model
 		$this->db->where('role_id', MY_Controller::HRD);
 
 		$hrd = $this->db->get()->result();
-		
+
 		for ($i = 0; $i < count($promotion); $i++) {
 			if ($this->db->get_where('promotion_approval', array('employee_id' => $promotion[$i]['id']))->num_rows() > 0) continue;
-			
+
 			$this->db->insert('promotion_approval', array('employee_id' => $promotion[$i]['id'], 'status' => 1));
-			
+
 			// Send information to HRD
 			foreach ($hrd as $person) {
 				$data = array(
 					'employee_id' 	=> $promotion[$i]['id'],
 					'receiver'		=> $person->id,
 				);
-				
+
 				if ($this->db->get_where('employment_promotion', $data)->num_rows() > 0) continue;
 
 				$this->db->insert('employment_promotion', $data);
-				
+
 				$this->db->set('notification', $promotion[$i]['name'] . ' telah bekerja selama 2 tahun');
 				$this->db->where($data);
 				$this->db->update('employment_promotion');
 
 				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
 			}
-			
+
 			// Search for direct-parent
 			$this->db->select('e.name, users.id');
 			$this->db->from('users');
@@ -447,7 +446,7 @@ class General extends CI_Model
 			$this->db->join('employee_position AS ept', 'ept.employee_id = ep.employee_id');
 			$this->db->join('employees AS e', 'e.id = ep.employee_id');
 			$this->db->where('ept.position_id', $promotion[$i]['position']);
-			
+
 			$parent = $this->db->get()->result();
 
 			foreach ($parent as $person) {
@@ -463,7 +462,6 @@ class General extends CI_Model
 				$this->db->update('employment_promotion');
 
 				$this->notifications->sendMailEmployeePromotion($person->name, array('name' => $promotion[$i]['name'], 'nip' => $promotion[$i]['nip']));
-
 			}
 
 			// Search for top-level-parent
@@ -479,9 +477,9 @@ class General extends CI_Model
 							SELECT parent_id
 							FROM positions
 							WHERE org_unit = ? AND level < 5)";
-			
+
 			$parent = $this->db->query($query, array($promotion[$i]['position']))->result();
-			
+
 			foreach ($parent as $person) {
 				$data = array(
 					'employee_id'	=> $promotion[$i]['id'],
@@ -513,7 +511,7 @@ class General extends CI_Model
 		$this->db->where('prom.checked', FALSE);
 
 		// $employee = $this->db->get()->result();
-		
+
 		// foreach ($employee as $value) {
 		// 	if(date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
 		// 		array_push($promotion, array('name' => $value->name));
@@ -521,15 +519,24 @@ class General extends CI_Model
 		// }
 		$promotion = $this->db->get()->result();
 
-		
 		return $promotion;
 	}
-			
+
 	public function showEmployeePromotion()
 	{
-		$promotion = array();
+		$this->db->select('employee_id')->from('employment_promotion')->where('delete_at', date('Y-m-d'))->group_by('employee_id');
 
-		$this->db->select('ep.employee_id, e.name, ep.nip, ep.join_date, s.status, s.id AS approval_id');
+		$employee = $this->db->get()->result();
+
+		foreach ($employee as $person) {
+			$this->db->where('employee_id', $person->employee_id);
+			$this->db->delete('employment_promotion');
+
+			$this->db->where('employee_id', $person->employee_id);
+			$this->db->delete('promotion_approval');
+		}
+
+		$this->db->select('ep.employee_id, e.name, ep.nip, ep.join_date, s.status, s.id AS approval_id, prom.delete_at');
 		$this->db->from('employee_pt AS ep');
 		$this->db->join('employees AS e', 'e.id = ep.employee_id');
 		$this->db->join('employment_promotion AS prom', 'ep.employee_id = prom.employee_id');
@@ -538,23 +545,7 @@ class General extends CI_Model
 		$this->db->where('prom.receiver', $this->session->userdata('id'));
 		$this->db->group_by('employee_id');
 
-		$employee = $this->db->get()->result();
-
-		foreach ($employee as $value) {
-			if(date('Y-m-d', strtotime($value->join_date . '+2 years')) <= date('Y-m-d', strtotime('+3 months'))){
-				array_push(
-					$promotion, 
-					array(
-							'id' 			=> $value->employee_id, 
-							'name' 			=> $value->name, 
-							'join_date' 	=> $value->join_date, 
-							'nip' 			=> $value->nip,
-							'status'		=> $value->status,
-							'approval_id'	=> $value->approval_id
-						)
-					);
-			}		
-		}
+		$promotion = $this->db->get()->result();
 
 		return $promotion;
 	}
@@ -563,25 +554,26 @@ class General extends CI_Model
 	{
 		$this->db->select('created_at');
 		$this->db->from('employment_absences');
-		
+
 		$last_date = $this->db->get()->row()->created_at;
 
-		if ($last_date !== NULL And $last_date != date('Y-m-d')) {
-			$this->db->set(	array(
-									'created_at' 	=> date('Y-m-d'),
-									'checked'		=> FALSE,
-								)
-							);
+		if ($last_date !== NULL and $last_date != date('Y-m-d')) {
+			$this->db->set(
+				array(
+					'created_at' 	=> date('Y-m-d'),
+					'checked'		=> FALSE,
+				)
+			);
 			$this->db->update('employment_absences');
 		}
 
 		$employees = $this->searchEmployeeAbsence();
 
 		if (count($employees) > 0) {
-			foreach ($employees as $employee){
+			foreach ($employees as $employee) {
 				$check_employee = $this->db->get_where('employment_absences', array('employee_id' => $employee['id']));
-			
-				if($check_employee->num_rows() > 0) continue;
+
+				if ($check_employee->num_rows() > 0) continue;
 				else {
 					// Search for HRD
 					$this->db->select('e.name, l.user_id AS id');

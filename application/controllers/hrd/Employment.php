@@ -422,7 +422,7 @@ class Employment extends MY_Controller
 
 					// Update employment_promotion
 					$this->db->set('checked', FALSE);
-					$this->db->set('notification', $assessor_name . ' telah memberikan penilaian untuk pengangkatan ' . $this->input->post('name'));
+					$this->db->set('notification', $assessor_name . ' telah mengajukan perubahan status untuk pengangkatan ' . $this->input->post('name'));
 					$this->db->where('employee_id', $this->uri->segment(4));
 					$this->db->where('receiver', $m_sdm);
 					$this->db->update('employment_promotion');
@@ -512,7 +512,6 @@ class Employment extends MY_Controller
 			// Insert work_agreement_docs
 			$this->db->insert($this->agreement, $agreement);
 		}
-
 
 		if ($this->db->trans_status() === FALSE) {
 			$this->session->set_flashdata('error', 'Data pegawai gagal diubah');

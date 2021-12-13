@@ -36,15 +36,16 @@ class Promotion extends MY_Controller
             $data['approval'] = $approval->row();
 
             if ($data['approval']->status == 4) {
+                $data['status'] = $this->db->select('*')->from('employment_statuses')->get()->result();
                 $status_update = $this->promotions->getStatusUpdate($this->uri->segment(3));
 
                 if ($status_update->num_rows() > 0) $data['status_update'] = $status_update->row();
                 else $data['status_update'] = NULL;
-            } else $data['status_update'] = NULL;
+            } else {
+                $data['status'] = NULL;
+                $data['status_update'] = NULL;
+            }
         }else $data['approval'] = NULL;
-
-        var_dump($data['status_update']);
-        die;
 
         $this->load->view('/includes/main', $data);
     }
@@ -155,6 +156,77 @@ class Promotion extends MY_Controller
         }
 
         redirect("/notification");
+    }
+
+    public function update_status()
+    {
+        $this->db->trans_begin();
+
+        if ($this->input->post('status') == MY_Controller::RESIGN) $active_status = NULL;
+        else $active_status = 1;
+
+        $data = array(
+            'employee_id'       => $this->input->post('employee_id'),
+            'status'            => $this->input->post('status'),
+            'active_status'     => $active_status,
+            'effective_date'    => $this->input->post('effective_date'),
+            'updated_at'        => date('Y-m-d'),
+            'updated_by'        => $this->session->userdata('id'),
+        );
+
+        $this->db->insert('status_updates', $data);
+
+        $this->db->set('status_request', TRUE);
+        $this->db->where('employee_id', $this->input->post('employee_id'));
+        $this->db->update('promotion_approval');
+
+        // Work Agreement File Upload
+        $file = $_FILES['work_agreement_file'];
+
+        if (strlen($file['name'])) {
+            $f_name = $file['name'];
+            $f_type = $file['type'];
+            $f_content = file_get_contents($file['tmp_name']);
+
+            $agreement = array(
+                'employee_id' 	=> $this->uri->segment(4),
+                'name'			=> $f_name,
+                'doc_type'		=> $f_type,
+                'doc'			=> $f_content,
+                'uploaded_by'	=> $this->session->userdata('id')
+            );
+            // Insert work_agreement_docs
+            $this->db->insert($this->agreement, $agreement);
+        }
+
+        if (in_array(51, $this->session->userdata('position'))) {
+            $this->db->set('status', $this->input->post('status'));
+            $this->db->set('active_status', $active_status);
+            $this->db->where('employee_id', $this->input->post('employee_id'));
+            $this->db->update('employee_pt');
+
+            $this->db->select('user_id')->from('login')->where('role_id', MY_Controller::HRD);
+
+            $hrd = $this->db->get()->result();
+
+            foreach ($hrd as $person) {
+                $this->db->set('delete_at', date('Y-m-d', strtotime(date('Y-m-d') . '+ 1 week')));
+                $this->db->set('checked', FALSE);
+                $this->db->where('employee_id', $this->input->post('employee_id'));
+                $this->db->where('receiver <>', $person->user_id);
+                $this->db->update('employment_promotion');
+            }
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->session->set_flashdata('promotion_error', 'Penilaian pegawai gagal diberikan');
+            $this->db->trans_rollback();
+        }else{
+            $this->session->set_flashdata('promotion_success', 'Penilaian pegawai berhasil diberikan');
+            $this->db->trans_commit();
+        }
+
+        redirect(base_url() . "notification");
     }
 }
 

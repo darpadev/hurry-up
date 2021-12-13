@@ -35,7 +35,7 @@
                                 </div>
                                 <hr>
                                 <div id="reason" class="mb-3">
-                                    <input type="text" name="reason[]" class="reason-field form-control" placeholder="Dasar Pertimbangan" required>
+                                    <input type="text" name="reason[]" class="reason-field form-control" placeholder="Dasar Pertimbangan" required onkeypress="javascript: if(event.keyCode == 13) return false">
                                 </div>
                                 <div class="text-right">
                                     <a href="" id="delete" class="btn btn-danger btn-sm">Hapus</a>
@@ -71,9 +71,9 @@
                                     <?= $review[0] ?>
                                 </ol>
                             </div>
-                            
+
                             <hr class="border-primary">
-                            
+
                             <div class="mb-3 d-flex justify-content-around">
                                 <div>
                                     <h5 class="font-weight-bold">Penilaian Kinerja <?= date('Y', strtotime($employee->join_date)) ?></h5>
@@ -94,23 +94,49 @@
 
                             <?php if ($approval->manager !== NULL) : ?>
                                 <div class="mb-3">
-                                    <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Manajer</span><?= " " . $approval->manager ?></p>
+                                    <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Manajer</span><?= " " . substr($approval->manager, 2) ?></p>
                                 </div>
                             <?php endif ?>
-                            
+
                             <?php if ($approval->director !== NULL) : ?>
+                                <?php $director = explode(';', $approval->director) ?>
                                 <div class="mb-3">
-                                    <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Direktur</span><?= " " . $approval->director ?></p>
+                                    <p class="m-0"><span class="badge badge-primary" style="font-size: 14px">Keputusan Direktur</span><?= " " . substr($approval->director, 2) ?></p>
                                 </div>
 
                                 <hr class="border-primary">
 
                                 <?php if ($this->session->userdata('role') == MY_Controller::HRD) : ?>
-                                    <?php if ($status_update === NULL) : ?>
-                                        <div class="text-right">
+                                    <?php if ($approval->status_request == FALSE) : ?>
+                                        <form action="<?= base_url() . "promotion/update_status" ?>" method="post" enctype="multipart/form-data">
+                                            <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <select name="status" class="form-control" required>
+                                                        <option value="" selected disabled> -- Pilih Status -- </option>
+                                                        <?php foreach ($status as $item) : ?>
+                                                            <option value="<?= $item->id ?>" <?= $director[0] == $item->id ? 'selected' : '' ?>><?= $item->status ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <input class="form-control" type="date" name="effective_date" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Dokumen Kontrak</label>
+                                                    <input type="file" name="work_agreement_file" class="form-control" style="border: 0;" accept=".pdf" required>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <button class="btn btn-primary">Perbaharui Status</button>
+                                            </div>
+                                        </form>
+                                        <!-- <div class="text-right">
                                             <a href="<?= base_url() . "hrd/employment/show/" . $this->uri->segment(3) ?>" class="btn btn-success">Perbaharui Status</a>
-                                        </div>
-                                    <?php elseif ($status_update !== NULL And in_array(51, $this->session->userdata('position'))) : ?>
+                                        </div> -->
+                                    <?php elseif ($status_update !== NULL and in_array(51, $this->session->userdata('position')) and $approval->status_request) : ?>
                                         <div class="mb-3">
                                             <p class=""><span class="badge badge-warning text-dark" style="font-size: 14px">Status diubah oleh</span><?= " " . $status_update->assessor_name ?></p>
                                             <p class="font-weight-bold"><?= $status_update->status_name . ' ' . $status_update->active_name ?></p>
@@ -128,9 +154,9 @@
                                 <?php endif ?>
                             <?php endif ?>
 
-                            <?php if ($approval->manager === NULL Or $approval->director === NULL) : ?>
+                            <?php if ($approval->manager === NULL or $approval->director === NULL) : ?>
 
-                                <?php if ($approval->manager !== NULL ) : ?>
+                                <?php if ($approval->manager !== NULL) : ?>
                                     <hr class="border-primary">
                                 <?php endif ?>
 
@@ -141,7 +167,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                        <input class="form-check" type="radio" name="promotion" value="Tetap">
+                                                        <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::ACTIVE . ';Tetap' ?>">
                                                     </div>
                                                 </div>
                                                 <label class="form-check-label align-self-center">Diangkat Menjadi Pegawai Tetap</label>
@@ -153,7 +179,7 @@
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                            <input class="form-check" type="radio" name="promotion" value="Kontrak">
+                                                            <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::CONTRACT . ';Kontrak' ?>">
                                                         </div>
                                                     </div>
                                                     <div class="d-inline-flex align-items-center">
@@ -174,7 +200,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                        <input class="form-check" type="radio" name="promotion" value="None">
+                                                        <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::RESIGN . ';Tidak diangkat dan tidak diperpanjang' ?>">
                                                     </div>
                                                 </div>
                                                 <label class="form-check-label align-self-center">Tidak Diangkat dan Tidak Diperpanjang</label>

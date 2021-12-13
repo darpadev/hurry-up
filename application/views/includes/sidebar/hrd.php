@@ -128,14 +128,14 @@
             </ul>
           </li>
 
-          <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == 'employee') { echo 'menu-open'; } ?>">
+          <!-- <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == 'employee') { echo 'menu-open'; } ?>">
             <a href="<?php echo base_url() ?>hrd/employee" class="nav-link <?php if ($this->uri->segment(2) == 'employee') { echo 'active'; } ?>">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 Pegawai
               </p>
             </a>
-          </li>
+          </li> -->
 
           <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == 'employment') { echo 'menu-open'; } ?>">
             <a href="<?php echo base_url() ?>hrd/employment" class="nav-link <?php if ($this->uri->segment(2) == 'employment') { echo 'active'; } ?>">
