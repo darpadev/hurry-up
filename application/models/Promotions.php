@@ -47,7 +47,6 @@ class Promotions extends CI_Model
         $this->db->join('employment_statuses', 'employment_statuses.id = status_updates.status');
         $this->db->join('employment_active_statuses', 'employment_active_statuses.id = status_updates.active_status');
         $this->db->where('status_updates.employee_id', $id);
-        $this->db->where('status_updates.status <>', MY_Controller::CONTRACT);
         $this->db->order_by('status_updates.updated_at', 'desc');
         $this->db->limit(1);
 
