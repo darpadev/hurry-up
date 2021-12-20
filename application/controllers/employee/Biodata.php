@@ -22,23 +22,24 @@ class Biodata extends MY_Controller
 	{
 		$id = $this->session->userdata('employee');
 
-		$data['content']	= $this->view.'content';
-		$data['css']		= $this->view.'css';
-		$data['javascript']	= $this->view.'javascript';
-		$data['title']		= 'Biodata';
-		$data['sub_title']	= '';
-		$data['data']		= $this->employees->showEmployee($id)->row();
-		$data['message']	= '';
-
+		$data['content']		= $this->view.'content';
+		$data['css']			= $this->view.'css';
+		$data['javascript']		= $this->view.'javascript';
+		$data['title']			= 'Biodata';
+		$data['sub_title']		= '';
+		$data['data']			= $this->employees->showEmployee($id)->row();
+		$data['message']		= '';
+		$data['notif']			= $this->general->countEmployeeAbsence();
+		$data['promotion']		= $this->general->countEmployeePromotion();
 		$data['organizations']	= $this->employees->showEmployeeOrgUnit($id);
-		$data['educations']	= $this->employees->showEmployeeEducation($id);
+		$data['educations']		= $this->employees->showEmployeeEducation($id);
 
-		$mulai = $data['data']->join_date;
-		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)). " + 1 year"));
-		$selesai = date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)). " - 1 day"));
-		$diff = abs(strtotime(date('Y-m-d')) - strtotime($mulai));
-		$years = floor($diff / (365*60*60*24));
-		$periode = array();
+		$mulai 		= $data['data']->join_date;
+		$selesai 	= date('Y-m-d', strtotime(date('Y-m-d', strtotime($mulai)). " + 1 year"));
+		$selesai 	= date('Y-m-d', strtotime(date('Y-m-d', strtotime($selesai)). " - 1 day"));
+		$diff 		= abs(strtotime(date('Y-m-d')) - strtotime($mulai));
+		$years 		= floor($diff / (365*60*60*24));
+		$periode 	= array();
 
 		for ($i=0; $i <= $years ; $i++) { 
 			if ($i > 0) {
@@ -92,6 +93,8 @@ class Biodata extends MY_Controller
 		$data['title']		= 'Biodata';
 		$data['sub_title']	= 'Ubah';
 		$data['message']	= '';
+		$data['notif']		= $this->general->countEmployeeAbsence();
+		$data['promotion']	= $this->general->countEmployeePromotion();
 		$data['data']		= $this->employees->showEmployee($this->session->userdata('employee'))->row();
 		$data['provinces']	= $this->db->get('provinces');
 		$data['cities']		= $this->db->get('cities');
