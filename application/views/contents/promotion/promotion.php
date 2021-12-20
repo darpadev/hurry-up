@@ -154,65 +154,60 @@
                                 <?php endif ?>
                             <?php endif ?>
 
-                            <?php if ($approval->manager === NULL or $approval->director === NULL) : ?>
+                            <hr class="border-primary">
 
-                                <?php if ($approval->manager !== NULL) : ?>
-                                    <hr class="border-primary">
-                                <?php endif ?>
-
-                                <form action="<?= base_url() ?>promotion/update" method="post">
-                                    <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
-                                    <div class="radio align-items-center">
-                                        <div class="form-check mt-2">
+                            <form action="<?= base_url() ?>promotion/update" method="post">
+                                <input type="hidden" name="employee_id" value="<?= $this->uri->segment(3) ?>">
+                                <div class="radio align-items-center">
+                                    <div class="form-check mt-2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text rounded mr-2" style="padding: 15px;">
+                                                    <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::ACTIVE . ';Tetap' ?>">
+                                                </div>
+                                            </div>
+                                            <label class="form-check-label align-self-center">Diangkat Menjadi Pegawai Tetap</label>
+                                        </div>
+                                        <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <div class="d-flex">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                        <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::ACTIVE . ';Tetap' ?>">
+                                                        <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::CONTRACT . ';Kontrak' ?>">
                                                     </div>
                                                 </div>
-                                                <label class="form-check-label align-self-center">Diangkat Menjadi Pegawai Tetap</label>
-                                            </div>
-                                            <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
-                                        </div>
-                                        <div class="form-check mt-2">
-                                            <div class="d-flex">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                            <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::CONTRACT . ';Kontrak' ?>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-inline-flex align-items-center">
-                                                        <label class="form-check-label mr-3">Kontrak Diperpanjang</label>
-                                                        <div id="duration" style="display: none;">
-                                                            <select name="duration" class="form-control align-self-center">
-                                                                <option value="+ 6 months">6 Bulan</option>
-                                                                <option value="+ 12 months">12 Bulan</option>
-                                                                <option value="+ 24 months">24 Bulan</option>
-                                                            </select>
-                                                        </div>
+                                                <div class="d-inline-flex align-items-center">
+                                                    <label class="form-check-label mr-3">Kontrak Diperpanjang</label>
+                                                    <div id="duration" style="display: none;">
+                                                        <select name="duration" class="form-control align-self-center">
+                                                            <option value="+ 6 months">6 Bulan</option>
+                                                            <option value="+ 12 months">12 Bulan</option>
+                                                            <option value="+ 24 months">24 Bulan</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
                                         </div>
-                                        <div class="form-check mt-2">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text rounded mr-2" style="padding: 15px;">
-                                                        <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::RESIGN . ';Tidak diangkat dan tidak diperpanjang' ?>">
-                                                    </div>
-                                                </div>
-                                                <label class="form-check-label align-self-center">Tidak Diangkat dan Tidak Diperpanjang</label>
-                                            </div>
-                                            <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
-                                        </div>
+                                        <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
                                     </div>
-                                    <div class="text-right mt-3">
-                                        <button class="btn btn-primary">Kirim</button>
+                                    <div class="form-check mt-2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text rounded mr-2" style="padding: 15px;">
+                                                    <input class="form-check" type="radio" name="promotion" value="<?= MY_Controller::RESIGN . ';Tidak diangkat dan tidak diperpanjang' ?>">
+                                                </div>
+                                            </div>
+                                            <label class="form-check-label align-self-center">Tidak Diangkat dan Tidak Diperpanjang</label>
+                                        </div>
+                                        <input type="text" class="description form-control mt-2" style="display: none;" placeholder="Keterangan">
                                     </div>
-                                </form>
-                            <?php endif ?>
+                                </div>
+                                <div class="text-right mt-3">
+                                    <button class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
                         <?php endif ?>
                         </div>
                 </div>

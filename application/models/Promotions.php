@@ -52,4 +52,19 @@ class Promotions extends CI_Model
 
         return $this->db->get();
     }
+
+    public function inspectDecision($id)
+    {
+        $this->db->select('manager, director');
+        $this->db->from('promotion_approval');
+        $this->db->where('id', $id);
+        
+        $decision  = $this->db->get()->row();
+
+        $manager = explode(';', $decision->manager);
+        $director = explode(';', $decision->director);
+
+        if ($manager[0] == $director[0]) return true;
+        else return false;
+    }
 }

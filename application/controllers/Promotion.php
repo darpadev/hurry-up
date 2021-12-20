@@ -218,11 +218,19 @@ class Promotion extends MY_Controller
             }
         }
 
+        $decision = $this->promotions->inspectDecision($this->input->post('employee_id'));
+
+        if (!$decision) {
+            // Update promotion status to "Menunggu Penilaian Manajer"
+            $this->db->where('employee_id', $this->input->post('employee_id'));
+            $this->db->update('promotion_approval', array('status' => 2));
+        }
+
         if ($this->db->trans_status() === FALSE) {
-            $this->session->set_flashdata('promotion_error', 'Penilaian pegawai gagal diberikan');
+            $this->session->set_flashdata('promotion_error', 'Perubahan status berhasil dilakukan');
             $this->db->trans_rollback();
         }else{
-            $this->session->set_flashdata('promotion_success', 'Penilaian pegawai berhasil diberikan');
+            $this->session->set_flashdata('promotion_success', 'Perubahan status gagal dilakukan');
             $this->db->trans_commit();
         }
 
