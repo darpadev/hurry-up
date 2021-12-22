@@ -57,14 +57,30 @@ class Promotions extends CI_Model
     {
         $this->db->select('manager, director');
         $this->db->from('promotion_approval');
-        $this->db->where('id', $id);
+        $this->db->where('employee_id', $id);
         
         $decision  = $this->db->get()->row();
 
         $manager = explode(';', $decision->manager);
         $director = explode(';', $decision->director);
 
-        if ($manager[0] == $director[0]) return true;
-        else return false;
+        if ($manager[0] == 2 And $director[0] == 2) {
+            if ($manager[2] == $director[2]) return TRUE;
+            else return FALSE;
+        } 
+        else if ($manager[0] == $director[0]) return TRUE;
+        else return FALSE;
+    }
+
+    public function decisionExist($position, $id)
+    {
+        $this->db->select($position);
+        $this->db->from('promotion_approval');
+        $this->db->where('employee_id', $id);
+
+        $decision = $this->db->get()->row();
+
+        if ($decision === NULL) return FALSE;
+        else return TRUE;
     }
 }

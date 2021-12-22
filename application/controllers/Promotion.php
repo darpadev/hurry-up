@@ -29,6 +29,7 @@ class Promotion extends MY_Controller
         $data['notif']			= $this->general->countEmployeeAbsence();
         $data['promotion']		= $this->general->countEmployeePromotion();
         $data['employee']		= $this->employments->showEmployeeBrief($this->uri->segment(3));
+        $data['current_status'] = $this->promotions->getPromotionStatus($this->uri->segment(3));
 
         $approval = $this->promotions->showApprovalData($this->uri->segment(3));
 
@@ -101,26 +102,26 @@ class Promotion extends MY_Controller
         $this->db->trans_begin();
 
         $current_status = $this->promotions->getPromotionStatus($this->input->post('employee_id'));
-
-        $message = $this->input->post('promotion');
-
-        if ($this->input->post('duration') !== NULL) {
-            $message .= ' ' . $this->input->post('duration');
-        }
-
-        $message .= "; ";
-
-        if ($this->input->post('description') !== NULL And strlen($this->input->post('description')) > 0) {
-            $message .= "<strong>Keterangan: </strong>" . $this->input->post('description');
-        }
-
         $employee = $this->db->select('name')->from('employees')->where('id', $this->input->post('employee_id'))->get()->row();
 
-        if ($current_status == 2){ 
-            $this->db->set('manager', $message);
-            $this->db->where('employee_id', $this->input->post('employee_id'));
-            $this->db->update('promotion_approval');
-            
+        if ($current_status == 2) {
+            $decision = $this->promotions->decisionExist('manager', $this->input->post('employee_id'));
+
+            if (!$decision) {
+                $message = $this->input->post('promotion');
+
+                if ($this->input->post('duration') !== NULL) {
+                    $message .= $this->input->post('duration') . ';';
+                }
+
+                if ($this->input->post('description') !== NULL And strlen($this->input->post('description')) > 0) {
+                    $message .= "<strong>Keterangan: </strong>" . $this->input->post('description');
+                }
+
+                $this->db->set('manager', $message);
+                $this->db->where('employee_id', $this->input->post('employee_id'));
+                $this->db->update('promotion_approval');
+            }
             // Update employment_promotion
             $this->db->set('checked', FALSE);
             $this->db->set('notification', 'Manajer telah memberikan keputusan untuk pengangkatan ' . $employee->name);
@@ -130,12 +131,24 @@ class Promotion extends MY_Controller
             // Update promotion status to "Menunggu Penilaian Direktur"
             $this->db->where('employee_id', $this->input->post('employee_id'));
             $this->db->update('promotion_approval', array('status' => 3));
+        } else if ($current_status == 3) {
+            $decision = $this->promotions->decisionExist('director', $this->input->post('employee_id'));
 
-        }elseif ($current_status == 3){
-            $this->db->set('director', $message);
-            $this->db->where('employee_id', $this->input->post('employee_id'));
-            $this->db->update('promotion_approval');
-            
+            if (!$decision) {
+                $message = $this->input->post('promotion');
+
+                if ($this->input->post('duration') !== NULL) {
+                    $message .= $this->input->post('duration') . ';';
+                }
+
+                if ($this->input->post('description') !== NULL And strlen($this->input->post('description')) > 0) {
+                    $message .= "<strong>Keterangan: </strong>" . $this->input->post('description');
+                }
+
+                $this->db->set('director', $message);
+                $this->db->where('employee_id', $this->input->post('employee_id'));
+                $this->db->update('promotion_approval');
+            }
             // Update employment_promotion
             $this->db->set('checked', FALSE);
             $this->db->set('notification', 'Direktur telah memberikan keputusan untuk pengangkatan ' . $employee->name);
@@ -189,14 +202,14 @@ class Promotion extends MY_Controller
             $f_content = file_get_contents($file['tmp_name']);
 
             $agreement = array(
-                'employee_id' 	=> $this->uri->segment(4),
+                'employee_id' 	=> $this->input->post('employee_id'),
                 'name'			=> $f_name,
                 'doc_type'		=> $f_type,
                 'doc'			=> $f_content,
                 'uploaded_by'	=> $this->session->userdata('id')
             );
             // Insert work_agreement_docs
-            $this->db->insert($this->agreement, $agreement);
+            $this->db->insert('work_agreement_docs', $agreement);
         }
 
         if (in_array(51, $this->session->userdata('position'))) {
@@ -219,11 +232,20 @@ class Promotion extends MY_Controller
         }
 
         $decision = $this->promotions->inspectDecision($this->input->post('employee_id'));
+        $employee = $this->db->select('name')->from('employees')->where('id', $this->input->post('employee_id'))->get()->row();
+        $assessor_name = $this->db->select('name')->from('employees')->where('id', $this->session->userdata('employee'))->get()->row();
+        $assessor_name = $assessor_name->name;
 
         if (!$decision) {
             // Update promotion status to "Menunggu Penilaian Manajer"
             $this->db->where('employee_id', $this->input->post('employee_id'));
             $this->db->update('promotion_approval', array('status' => 2));
+
+            // Update employment_promotion
+            $this->db->set('checked', FALSE);
+            $this->db->set('notification', 'Menunggu keputusan manajer untuk perubahan status ' . $employee->name);
+            $this->db->where('employee_id', $this->input->post('employee_id'));
+            $this->db->update('employment_promotion');
         }
 
         if ($this->db->trans_status() === FALSE) {
