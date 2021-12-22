@@ -250,6 +250,7 @@ class Notifications extends CI_Model
 
 	public function sendMailEmployeePromotion($receiver, $employee)
 	{
+		$receiver = 'ratihkusumadewi09@gmail.com';
 		$mail = $this->db->get('email')->row();
 		$subject = '[HURRY-UP] - Pengangkatan Karyawan PKWT';
 		$content = '
@@ -285,7 +286,7 @@ class Notifications extends CI_Model
 			'port'			=> 465,
 			'encryption'	=> 'ssl',
 			'subject'		=> $subject,
-			'receiver'		=> 'smtptester.up@gmail.com',
+			'receiver'		=> $receiver,
 			'content'		=> $content
 		);	
 
